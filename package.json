@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pr-platform/platform_server.git"
+  },
+  "keywords": [
+    "nodejs",
+    "js",
+    "javascript"
+  ],
+  "author": "supervueman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pr-platform/platform_server/issues"
+  },
+  "homepage": "https://github.com/pr-platform/platform_server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

@@ -1,50 +1,25 @@
-const RouterConnector = require('../connector/routers');
+const ModuleConnector = require('../connector');
 
 class App {
-  #corsConfig;
-  #databaseConfig;
-
   constructor(config) {
-    if (!App._instance) {
-      this.#corsConfig = config?.cors;
-      this.#databaseConfig = config?.database;
-
-      App._instance = this;
-    }
-
-    return App._instance;
+    this.config = config;
   }
 
   static getInstance() {
     return this._instance;
   }
 
-  #setCors() {
-    console.log('Cors: success');
-  }
-
-  #databaseConnection() {
-    console.log('Database connection: success');
-  }
-
-  #routersConnection(express) {
-    const routerConnector = new RouterConnector(express);
-
-    routerConnector.connect();
-
-    return routerConnector.getRouters();
+  #routersConnection(router) {
+    return new ModuleConnector(router).connect();
   }
 
   async bootstrap() {
     try {
-      await this.#databaseConnection();
       const express = require('express');
       const app = express();
-      const routers = this.#routersConnection(express)
+      const routers = this.#routersConnection(express.Router());
 
       app.use('/', routers);
-      console.log('Modules connection: success');
-      this.#setCors();
 
       app.listen(3000, () => console.log('Server start: http://localhost:3000'));
     } catch(error) {

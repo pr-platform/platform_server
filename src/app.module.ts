@@ -8,14 +8,14 @@ import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import databaseConfig from './config/database.config';
 import { validate } from './config/env.validation';
+import { Dialect } from 'sequelize/types';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig],
       validate,
+      isGlobal: true,
     }),
     WinstonModule.forRoot({
       transports: [
@@ -31,7 +31,7 @@ import { validate } from './config/env.validation';
       ],
     }),
     SequelizeModule.forRoot({
-      dialect: 'postgres',
+      dialect: process.env.DB_DIALECT as Dialect,
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT, 10),
       username: process.env.DB_USERNAME,

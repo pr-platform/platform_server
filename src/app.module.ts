@@ -7,9 +7,16 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import databaseConfig from './config/database.config';
+import { validate } from './config/env.validation';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      load: [databaseConfig],
+      validate,
+    }),
     WinstonModule.forRoot({
       transports: [
         new winston.transports.File({
@@ -25,11 +32,11 @@ import { AuthModule } from './auth/auth.module';
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'password',
-      database: 'pr_platform',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT, 10),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       models: [User],
       autoLoadModels: true,
     }),

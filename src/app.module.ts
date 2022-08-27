@@ -11,6 +11,10 @@ import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/env.validation';
 import { Dialect } from 'sequelize/types';
 
+const myFormat = winston.format.printf(
+  ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
+);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,6 +22,7 @@ import { Dialect } from 'sequelize/types';
       isGlobal: true,
     }),
     WinstonModule.forRoot({
+      format: winston.format.combine(winston.format.timestamp(), myFormat),
       transports: [
         new winston.transports.File({
           filename: 'logs/error.log',
@@ -25,7 +30,7 @@ import { Dialect } from 'sequelize/types';
         }),
         new winston.transports.File({
           filename: 'logs/success.log',
-          level: 'success',
+          level: 'info',
         }),
         new winston.transports.File({ filename: 'logs/combined.log' }),
       ],

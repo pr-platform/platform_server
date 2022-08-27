@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDataDto } from '../auth/dto/login-data.dto';
 
 @Injectable()
 export class UserService {
@@ -22,6 +23,15 @@ export class UserService {
     return this.userModel.findOne({
       where: {
         id,
+      },
+    });
+  }
+
+  async findByEmailAndPassword(loginData: LoginDataDto) {
+    return this.userModel.findOne({
+      where: {
+        email: loginData.email,
+        password: loginData.password,
       },
     });
   }

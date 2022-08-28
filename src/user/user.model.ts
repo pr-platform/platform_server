@@ -23,7 +23,6 @@ export class User extends Model {
 
   toJSON() {
     const values = Object.assign({}, this.get());
-    console.log(123123);
 
     delete values.password;
     return values;

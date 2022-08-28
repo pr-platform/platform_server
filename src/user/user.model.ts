@@ -1,9 +1,11 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, Index } from 'sequelize-typescript';
 
 @Table
 export class User extends Model {
+  @Index
   @Column({
     allowNull: false,
+    unique: true,
   })
   email: string;
 
@@ -18,4 +20,11 @@ export class User extends Model {
 
   @Column
   password: string;
+
+  toJson() {
+    const values = Object.assign({}, this.get());
+
+    delete values.password;
+    return values;
+  }
 }

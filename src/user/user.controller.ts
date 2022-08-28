@@ -12,6 +12,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { BadRequestException } from '@nestjs/common';
 
 @Controller('users')
 export class UserController {
@@ -24,14 +25,15 @@ export class UserController {
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
     try {
-      const createdUser = this.userService.create(createUserDto);
+      const createdUser = await this.userService.create(createUserDto);
 
       if (createdUser) {
         this.logger.log('User is create');
       }
-      return this.userService.create(createUserDto);
+      return createdUser;
     } catch (error) {
       this.logger.error(error.message);
+      throw new BadRequestException(error.message);
     }
   }
 

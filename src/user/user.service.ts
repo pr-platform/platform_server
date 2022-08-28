@@ -1,4 +1,4 @@
-import { Injectable, HttpException, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,7 +22,7 @@ export class UserService {
       parseInt(this.configService.get<string>('PASSWORD_SALT'), 10),
     );
 
-    return this.userModel.create<User>({
+    return await this.userModel.create<User>({
       ...createUserData,
       password,
     });

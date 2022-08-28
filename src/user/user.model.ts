@@ -21,10 +21,17 @@ export class User extends Model {
   @Column
   password: string;
 
-  toJson() {
+  toJSON() {
     const values = Object.assign({}, this.get());
+    console.log(123123);
 
     delete values.password;
     return values;
   }
 }
+
+User.prototype.toJSON = function () {
+  const values = Object.assign({}, this.get());
+  delete values.password;
+  return values;
+};

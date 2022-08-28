@@ -6,6 +6,7 @@ import {
   UseGuards,
   Inject,
   LoggerService,
+  Headers,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -38,5 +39,12 @@ export class UserController {
   @Get('/')
   async findAll() {
     return this.userService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/profile')
+  async findByAccessToken(@Headers('Authorization') bearerAccessToken: string) {
+    const accessToken = bearerAccessToken.split(' ')[1];
+    return this.userService.findByAccessToken(accessToken);
   }
 }

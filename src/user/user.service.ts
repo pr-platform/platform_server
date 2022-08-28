@@ -1,25 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDataDto } from '../auth/dto/login-data.dto';
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User)
     private userModel: typeof User,
+    private configService: ConfigService,
+    private jwtService: JwtService,
   ) {}
 
   async create(createUserData: CreateUserDto) {
-    return this.userModel.create<User>(createUserData as any);
+    const password = await bcrypt.hash(
+      createUserData.password,
+      parseInt(this.configService.get<string>('PASSWORD_SALT'), 10),
+    );
+
+    return this.userModel.create<User>({
+      ...createUserData,
+      password,
+    });
   }
 
   async findAll() {
     return this.userModel.findAll();
   }
 
-  async findOne(id: string) {
+  async findById(id: string) {
     return this.userModel.findOne({
       where: {
         id,
@@ -28,16 +41,29 @@ export class UserService {
   }
 
   async findByEmailAndPassword(loginData: LoginDataDto) {
-    return this.userModel.findOne({
+    const user = await this.userModel.findOne({
       where: {
         email: loginData.email,
-        password: loginData.password,
       },
     });
+
+    const isMatch = await bcrypt.compare(loginData.password, user.password);
+
+    if (!isMatch) {
+      throw new BadRequestException('Password is not correct');
+    }
+
+    return user;
+  }
+
+  async findByAccessToken(accessToken: string) {
+    const id = (this.jwtService.decode(accessToken) as any).userId;
+
+    return this.findById(id);
   }
 
   async remove(id: string) {
-    const user = await this.findOne(id);
+    const user = await this.findById(id);
     await user.destroy();
   }
 }

@@ -1,4 +1,13 @@
-import { Column, Model, Table, Index } from 'sequelize-typescript';
+import {
+  Column,
+  Model,
+  Table,
+  Index,
+  ForeignKey,
+  BelongsTo,
+  Length,
+} from 'sequelize-typescript';
+import { Role } from '../role/role.model';
 
 @Table
 export class User extends Model {
@@ -18,8 +27,16 @@ export class User extends Model {
   @Column({ defaultValue: true })
   isActive: boolean;
 
+  @Length({ min: 6 })
   @Column
   password: string;
+
+  @ForeignKey(() => Role)
+  @Column
+  roleId: number;
+
+  @BelongsTo(() => Role)
+  role: Role;
 }
 
 User.prototype.toJSON = function () {

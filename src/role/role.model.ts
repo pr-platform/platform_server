@@ -1,9 +1,11 @@
+import { User } from '../user/user.model';
 import {
   Column,
   Model,
   Table,
   Index,
   IsAlphanumeric,
+  HasMany,
 } from 'sequelize-typescript';
 
 @Table
@@ -18,4 +20,7 @@ export class Role extends Model {
 
   @Column
   title: string;
+
+  @HasMany(() => User)
+  users: User[];
 }

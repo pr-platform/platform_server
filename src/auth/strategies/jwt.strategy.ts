@@ -18,8 +18,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: {
         id: payload.userId,
       },
+      include: ['role'],
     });
 
-    return (user as any).dataValues;
+    const currentUser = {
+      ...(user as any).dataValues,
+      role: {
+        ...(user as any).dataValues.role.dataValues,
+      },
+    };
+
+    return currentUser;
   }
 }

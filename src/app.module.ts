@@ -4,14 +4,13 @@ import { AppService } from './app.service';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/env.validation';
 import { Dialect } from 'sequelize/types';
 import { RoleModule } from './role/role.module';
-import { Role } from './role/role.model';
+import { PermissionModule } from './permission/permission.module';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -44,12 +43,12 @@ const myFormat = winston.format.printf(
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Role],
       autoLoadModels: true,
     }),
     UserModule,
     AuthModule,
     RoleModule,
+    PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

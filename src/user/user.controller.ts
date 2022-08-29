@@ -7,7 +7,6 @@ import {
   Inject,
   LoggerService,
   Headers,
-  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -40,7 +39,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/')
-  async findAll(@Req() req) {
+  async findAll() {
     return this.userService.findAll();
   }
 

@@ -21,7 +21,7 @@ class EnvironmentVariables {
   JWT_EXPIRED: number;
 
   @IsString()
-  JWT_SECRETE_KEY: string;
+  JWT_SECRET_KEY: string;
 }
 
 export function validate(config: Record<string, unknown>) {

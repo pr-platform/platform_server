@@ -10,7 +10,6 @@ import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/env.validation';
 import { Dialect } from 'sequelize/types';
 import { RoleModule } from './role/role.module';
-import { PermissionModule } from './permission/permission.module';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -48,7 +47,6 @@ const myFormat = winston.format.printf(
     UserModule,
     AuthModule,
     RoleModule,
-    PermissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

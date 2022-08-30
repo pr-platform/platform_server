@@ -1,18 +1,17 @@
-import { User } from '../user/user.model';
-import { Permission } from './permission.model';
+import { Role } from './role.model';
 import { RolePermission } from './role-permission.model';
+
 import {
   Column,
   Model,
   Table,
   Index,
   IsAlphanumeric,
-  HasMany,
   BelongsToMany,
 } from 'sequelize-typescript';
 
 @Table
-export class Role extends Model {
+export class Permission extends Model {
   @Index
   @IsAlphanumeric
   @Column({
@@ -24,9 +23,6 @@ export class Role extends Model {
   @Column
   title: string;
 
-  @HasMany(() => User)
-  users: User[];
-
-  @BelongsToMany(() => Permission, () => RolePermission)
-  permissions: Permission[];
+  @BelongsToMany(() => Role, () => RolePermission)
+  roles: Role[];
 }

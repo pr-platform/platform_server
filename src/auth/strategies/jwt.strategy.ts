@@ -26,8 +26,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ],
     });
 
-    console.log(user)
-
     const currentUser = {
       ...(user as any).dataValues,
       role: {

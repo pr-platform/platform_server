@@ -46,6 +46,8 @@ export class UserService {
       },
     });
 
+    if (!user) return;
+
     const isMatch = await bcrypt.compare(loginData.password, user.password);
 
     if (!isMatch) {

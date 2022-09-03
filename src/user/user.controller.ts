@@ -47,6 +47,6 @@ export class UserController {
   @Get('/profile')
   async findByAccessToken(@Headers('Authorization') bearerAccessToken: string) {
     const accessToken = bearerAccessToken.split(' ')[1];
-    return this.userService.findByAccessToken(accessToken);
+    return await this.userService.findByAccessToken(accessToken);
   }
 }

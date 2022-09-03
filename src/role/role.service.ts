@@ -7,6 +7,8 @@ import { permissions } from './data/permissions';
 import { Permission } from './permission.model';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { Sequelize } from 'sequelize-typescript';
+import { UserService } from '../user/user.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class RoleService implements OnModuleInit {
@@ -16,9 +18,12 @@ export class RoleService implements OnModuleInit {
     @InjectModel(Permission)
     private permissionModel: typeof Permission,
     private sequelize: Sequelize,
+    private userService: UserService,
+    private configService: ConfigService,
   ) {}
 
   async onModuleInit() {
+    console.log('role module');
     const rolePermissions = {};
 
     permissions.forEach((permission) => {
@@ -62,6 +67,18 @@ export class RoleService implements OnModuleInit {
           }
         }
       }
+
+      const adminData = {
+        email: this.configService.get('ADMIN_EMAIL'),
+        password: this.configService.get('ADMIN_PASSWORD'),
+      };
+
+      const admin = await this.userService.findByEmailAndPassword(adminData);
+
+      const adminRole = await this.findByAlias('admin');
+
+      await adminRole.$add('users', admin);
+      await t.commit();
     } catch (error) {
       await t.rollback();
     }

@@ -14,6 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { BadRequestException } from '@nestjs/common';
 import { Roles } from 'src/role/decorators/role.decorator';
+import { RolesNames } from '../role/types';
 import { RolesGuard } from '../role/guards/role.gaurd';
 
 @Controller('users')
@@ -40,7 +41,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Roles('admin')
+  @Roles(RolesNames.ADMIN)
   @UseGuards(RolesGuard)
   @Get('/')
   async findAll() {

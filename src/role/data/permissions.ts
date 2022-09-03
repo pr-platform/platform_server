@@ -1,31 +1,31 @@
-import { Roles, Permissions } from '../types';
+import { RolesNames, PermissionsNames } from '../types';
 import { permissions as userPermissions } from '../../user/data/permissions';
 
 export const permissions = [
   {
-    alias: Permissions.CREATE_ROLES,
+    alias: PermissionsNames.CREATE_ROLES,
     title: 'Create roles',
-    roles: [Roles.ADMIN],
+    roles: [RolesNames.ADMIN],
   },
   {
-    alias: Permissions.UPDATE_ROLES,
+    alias: PermissionsNames.UPDATE_ROLES,
     title: 'Update roles',
-    roles: [Roles.ADMIN],
+    roles: [RolesNames.ADMIN],
   },
   {
-    alias: Permissions.READ_ROLES,
+    alias: PermissionsNames.READ_ROLES,
     title: 'Read roles',
-    roles: [Roles.ADMIN, Roles.DEFAULT],
+    roles: [RolesNames.ADMIN, RolesNames.DEFAULT],
   },
   {
-    alias: Permissions.REMOVE_ROLES,
+    alias: PermissionsNames.REMOVE_ROLES,
     title: 'Remove roles',
-    roles: [Roles.ADMIN],
+    roles: [RolesNames.ADMIN],
   },
   {
-    alias: Permissions.CHANGE_PERMISSIONS,
+    alias: PermissionsNames.CHANGE_PERMISSIONS,
     title: 'Change permissions',
-    roles: [Roles.ADMIN],
+    roles: [RolesNames.ADMIN],
   },
   ...userPermissions,
 ];

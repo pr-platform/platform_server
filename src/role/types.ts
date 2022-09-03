@@ -1,4 +1,4 @@
-export enum Permissions {
+export enum PermissionsNames {
   CREATE_ROLES = 'create_roles',
   UPDATE_ROLES = 'update_roles',
   READ_ROLES = 'read_roles',
@@ -11,7 +11,7 @@ export enum Permissions {
   BLOCK_USERS = 'block_users',
 }
 
-export enum Roles {
+export enum RolesNames {
   DEFAULT = 'default',
   ADMIN = 'admin',
   BLOCKED = 'blocked',

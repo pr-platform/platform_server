@@ -1,14 +1,15 @@
+import { Roles } from '../types';
 export const roles = [
   {
-    alias: 'default',
+    alias: Roles.DEFAULT,
     title: 'Default',
   },
   {
-    alias: 'admin',
+    alias: Roles.ADMIN,
     title: 'Admin',
   },
   {
-    alias: 'blocked',
+    alias: Roles.BLOCKED,
     title: 'Blocked',
   },
 ];

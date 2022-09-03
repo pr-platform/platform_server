@@ -10,6 +10,8 @@ import { ConfigModule } from '@nestjs/config';
 import { validate } from './config/env.validation';
 import { Dialect } from 'sequelize/types';
 import { RoleModule } from './role/role.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -49,6 +51,12 @@ const myFormat = winston.format.printf(
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

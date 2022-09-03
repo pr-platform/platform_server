@@ -13,6 +13,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { BadRequestException } from '@nestjs/common';
+import { Roles } from 'src/role/decorators/role.decorator';
+import { RolesGuard } from '../role/guards/role.gaurd';
 
 @Controller('users')
 export class UserController {
@@ -38,6 +40,8 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   @Get('/')
   async findAll() {
     return this.userService.findAll();

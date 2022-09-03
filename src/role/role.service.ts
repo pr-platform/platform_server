@@ -53,16 +53,15 @@ export class RoleService implements OnModuleInit {
 
           if (permissions && permissions.length) {
             for await (const permission of permissions) {
-              const existPermission = await this.findPermissionByAlias(
+              let existPermission = await this.findPermissionByAlias(
                 permission.alias,
               );
 
               if (!existPermission) {
-                const createdPermission = await this.createPermission(
-                  permission,
-                );
-                await createdRole.$add('permissions', createdPermission);
+                existPermission = await this.createPermission(permission);
               }
+
+              await createdRole.$add('permissions', existPermission);
             }
           }
         }
@@ -73,7 +72,11 @@ export class RoleService implements OnModuleInit {
         password: this.configService.get('ADMIN_PASSWORD'),
       };
 
-      const admin = await this.userService.findByEmailAndPassword(adminData);
+      let admin = await this.userService.findByEmailAndPassword(adminData);
+
+      if (!admin) {
+        admin = await this.userService.create(adminData)
+      }
 
       const adminRole = await this.findByAlias('admin');
 

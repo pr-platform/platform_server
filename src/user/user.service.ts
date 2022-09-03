@@ -15,20 +15,6 @@ export class UserService {
     private configService: ConfigService,
     private jwtService: JwtService,
   ) {}
-
-  async onModuleInit() {
-    const createAdminData: CreateUserDto = {
-      email: this.configService.get('ADMIN_EMAIL'),
-      password: this.configService.get('ADMIN_PASSWORD'),
-    };
-
-    const existAdmin = this.findByEmailAndPassword(createAdminData);
-
-    if (!existAdmin) {
-      await this.create(createAdminData);
-    }
-  }
-
   async create(createUserData: CreateUserDto) {
     const password = await bcrypt.hash(
       createUserData.password,

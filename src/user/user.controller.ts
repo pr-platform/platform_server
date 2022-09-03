@@ -14,8 +14,10 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { BadRequestException } from '@nestjs/common';
 import { Roles } from 'src/role/decorators/role.decorator';
-import { RolesNames } from '../role/types';
+import { RolesNames, PermissionsNames } from '../role/types';
 import { RolesGuard } from '../role/guards/role.gaurd';
+import { Permissions } from 'src/role/decorators/permission.decorator';
+import { PermissionsGuard } from '../role/guards/permission.guard';
 
 @Controller('users')
 export class UserController {
@@ -43,6 +45,8 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Roles(RolesNames.ADMIN)
   @UseGuards(RolesGuard)
+  @Permissions(PermissionsNames.READ_USERS)
+  @UseGuards(PermissionsGuard)
   @Get('/')
   async findAll() {
     return this.userService.findAll();

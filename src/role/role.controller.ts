@@ -22,7 +22,7 @@ export class RoleController {
   @Post('/create')
   private async create(@Body() createRoleDto: CreateRoleDto) {
     try {
-      return await this.roleService.create(createRoleDto);
+      return await this.roleService.createRole(createRoleDto);
     } catch (error) {
       this.logger.error(error.message);
       throw new BadRequestException(error.message);

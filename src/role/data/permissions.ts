@@ -21,5 +21,10 @@ export const permissions = [
     title: 'Remove roles',
     roles: ['admin'],
   },
+  {
+    alias: 'change_permissions',
+    title: 'Change permissions',
+    roles: ['admin'],
+  },
   ...userPermissions,
 ];

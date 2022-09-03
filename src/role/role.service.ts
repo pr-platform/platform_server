@@ -23,7 +23,6 @@ export class RoleService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    console.log('role module');
     const rolePermissions = {};
 
     permissions.forEach((permission) => {
@@ -46,23 +45,29 @@ export class RoleService implements OnModuleInit {
         const existRole = await this.findByAlias(role.alias);
 
         if (!existRole) {
-          const createdRole = await this.create(role);
+          await this.createRole(role);
+        }
+      }
 
-          const permissions =
-            rolePermissions[(createdRole as any).dataValues.alias];
+      const rolesAliases = Object.keys(rolePermissions);
 
-          if (permissions && permissions.length) {
-            for await (const permission of permissions) {
-              let existPermission = await this.findPermissionByAlias(
-                permission.alias,
-              );
+      for await (const alias of rolesAliases) {
+        const existRole = await this.findByAlias(alias);
 
-              if (!existPermission) {
-                existPermission = await this.createPermission(permission);
-              }
+        const permissions =
+          rolePermissions[(existRole as any).dataValues.alias];
 
-              await createdRole.$add('permissions', existPermission);
+        if (permissions && permissions.length) {
+          for await (const permission of permissions) {
+            let existPermission = await this.findPermissionByAlias(
+              permission.alias,
+            );
+
+            if (!existPermission) {
+              existPermission = await this.createPermission(permission);
             }
+
+            await existRole.$add('permissions', existPermission);
           }
         }
       }
@@ -75,7 +80,7 @@ export class RoleService implements OnModuleInit {
       let admin = await this.userService.findByEmailAndPassword(adminData);
 
       if (!admin) {
-        admin = await this.userService.create(adminData)
+        admin = await this.userService.create(adminData);
       }
 
       const adminRole = await this.findByAlias('admin');
@@ -87,8 +92,12 @@ export class RoleService implements OnModuleInit {
     }
   }
 
-  async create(createRoleData: CreateRoleDto) {
+  async createRole(createRoleData: CreateRoleDto) {
     return await this.roleModel.create(createRoleData as any);
+  }
+
+  async createRoles(createRoleData: CreateRoleDto[]) {
+    return await this.roleModel.bulkCreate(createRoleData as any);
   }
 
   async findByAlias(alias: string) {

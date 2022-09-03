@@ -6,14 +6,12 @@ import {
   Model,
   Table,
   Index,
-  IsAlphanumeric,
   BelongsToMany,
 } from 'sequelize-typescript';
 
 @Table
 export class Permission extends Model {
   @Index
-  @IsAlphanumeric
   @Column({
     allowNull: false,
     unique: true,

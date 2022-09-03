@@ -7,4 +7,8 @@ export const roles = [
     alias: 'admin',
     title: 'Admin',
   },
+  {
+    alias: 'blocked',
+    title: 'Blocked',
+  },
 ];

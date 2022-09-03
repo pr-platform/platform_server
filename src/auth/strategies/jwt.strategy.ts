@@ -26,10 +26,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ],
     });
 
+    const role = (user as any).dataValues.role.dataValues;
+
     const currentUser = {
       ...(user as any).dataValues,
       role: {
-        ...(user as any).dataValues.role.dataValues,
+        id: role.id,
+        alias: role.alias,
+        title: role.title,
+        permissions: role.permissions.map((permission) => ({
+          id: permission.dataValues.id,
+          alias: permission.dataValues.alias,
+          title: permission.dataValues.title,
+        })),
       },
     };
 

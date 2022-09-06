@@ -10,10 +10,6 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async onModuleInit() {
-    console.log('auth module');
-  }
-
   async login(loginData: LoginDataDto) {
     const user = await this.userService.findByEmailAndPassword(loginData);
 

@@ -10,7 +10,9 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { RoleService } from './role.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { LoggerService } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Role')
 @Controller('roles')
 export class RoleController {
   constructor(

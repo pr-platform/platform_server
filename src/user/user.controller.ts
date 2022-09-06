@@ -7,18 +7,21 @@ import {
   Inject,
   LoggerService,
   Headers,
+  HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { Roles } from 'src/role/decorators/role.decorator';
 import { RolesNames, PermissionsNames } from '../role/types';
-import { RolesGuard } from '../role/guards/role.gaurd';
+import { RolesGuard } from '../role/guards/role.guard';
 import { Permissions } from 'src/role/decorators/permission.decorator';
 import { PermissionsGuard } from '../role/guards/permission.guard';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('users')
 export class UserController {
   constructor(
@@ -27,6 +30,11 @@ export class UserController {
     private readonly logger: LoggerService,
   ) {}
 
+  @ApiBody({
+    type: CreateUserDto,
+  })
+  @ApiCreatedResponse()
+  @HttpCode(HttpStatus.CREATED)
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
     try {
@@ -42,11 +50,9 @@ export class UserController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Roles(RolesNames.ADMIN)
-  @UseGuards(RolesGuard)
   @Permissions(PermissionsNames.READ_USERS)
-  @UseGuards(PermissionsGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
   @Get('/')
   async findAll() {
     return this.userService.findAll();

@@ -19,7 +19,12 @@ import { RolesNames, PermissionsNames } from '../role/types';
 import { RolesGuard } from '../role/guards/role.guard';
 import { Permissions } from 'src/role/decorators/permission.decorator';
 import { PermissionsGuard } from '../role/guards/permission.guard';
-import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { User } from './user.model';
 
 @ApiTags('User')

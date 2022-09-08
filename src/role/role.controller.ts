@@ -5,12 +5,32 @@ import {
   Post,
   BadRequestException,
   Inject,
+  HttpCode,
+  UseGuards,
+  Param,
 } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { RoleService } from './role.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { LoggerService } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { LoggerService, HttpStatus } from '@nestjs/common';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
+import { PermissionsNames } from './types';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PermissionsGuard } from './guards/permission.guard';
+import { Permissions } from './decorators/permission.decorator';
+import { Role } from './role.model';
+
+class BodyFindByAlias {
+  @ApiProperty()
+  alias: string;
+}
 
 @ApiTags('Role')
 @Controller('roles')
@@ -21,6 +41,25 @@ export class RoleController {
     private readonly logger: LoggerService,
   ) {}
 
+  @ApiBody({
+    type: CreateRoleDto,
+    examples: {
+      CREATE_TEST_ROLE: {
+        value: {
+          alias: 'test',
+          title: 'Test role',
+        },
+      },
+    },
+    description: 'Set requesred field for create role',
+  })
+  @ApiCreatedResponse({
+    type: Role,
+    description: 'Return created role',
+  })
+  @HttpCode(HttpStatus.CREATED)
+  @Permissions(PermissionsNames.CREATE_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Post('/create')
   private async create(@Body() createRoleDto: CreateRoleDto) {
     try {
@@ -31,16 +70,63 @@ export class RoleController {
     }
   }
 
+  @ApiBody({
+    type: BodyFindByAlias,
+    examples: {
+      ADMIN_ROLE: {
+        value: {
+          alias: 'admin',
+        },
+      },
+      DEFAULT_ROLE: {
+        value: {
+          alias: 'default',
+        },
+      },
+    },
+    description: 'Set role alias',
+  })
+  @ApiOkResponse({
+    type: Role,
+    description: 'Return role',
+  })
+  @Permissions(PermissionsNames.READ_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Get('/find-by-alias')
   private async findByAlias(@Body('alias') alias: string) {
     return await this.roleService.findByAlias(alias);
   }
 
-  @Get('/find-by-id')
-  private async findById(@Body('id') id: string) {
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    examples: {
+      ROLE: {
+        value: 1,
+      },
+    },
+    description: 'Set required id role param',
+  })
+  @ApiOkResponse({
+    type: Role,
+    description: 'Return role',
+  })
+  @Permissions(PermissionsNames.READ_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Get('/:id')
+  private async findById(@Param('id') id: number) {
     return await this.roleService.findById(id);
   }
 
+  @ApiBody({
+    type: String,
+  })
+  @ApiOkResponse({
+    type: [Role],
+    description: 'Return roles array',
+  })
+  @Permissions(PermissionsNames.READ_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Get('/')
   private async findAll() {
     return await this.roleService.findAll();

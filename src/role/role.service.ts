@@ -89,6 +89,7 @@ export class RoleService implements OnModuleInit {
 
       await t.commit();
     } catch (error) {
+      console.log(error.message)
       await t.rollback();
     }
   }

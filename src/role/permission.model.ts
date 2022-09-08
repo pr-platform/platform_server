@@ -13,6 +13,13 @@ import { ApiProperty } from '@nestjs/swagger';
 @Table
 export class Permission extends Model {
   @ApiProperty({
+    type: Number,
+    description: 'Permission id',
+    default: null,
+  })
+  declare id: number;
+
+  @ApiProperty({
     type: String,
     description: 'Permission alias',
     required: true,

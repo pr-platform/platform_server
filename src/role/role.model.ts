@@ -15,6 +15,13 @@ import { ApiProperty } from '@nestjs/swagger';
 @Table
 export class Role extends Model {
   @ApiProperty({
+    type: Number,
+    description: 'Role id',
+    default: null,
+  })
+  declare id: number;
+
+  @ApiProperty({
     type: String,
     required: true,
     description: 'Role alias',

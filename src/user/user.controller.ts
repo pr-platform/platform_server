@@ -55,7 +55,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
   @Get('/')
   async findAll() {
-    return this.userService.findAll();
+    return await this.userService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)

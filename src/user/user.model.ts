@@ -13,6 +13,13 @@ import { Role } from '../role/role.model';
 @Table
 export class User extends Model {
   @ApiProperty({
+    type: Number,
+    description: 'User id',
+    default: null,
+  })
+  declare id: number;
+
+  @ApiProperty({
     type: String,
     description: 'User email',
     required: true,

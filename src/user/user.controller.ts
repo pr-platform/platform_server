@@ -14,9 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { BadRequestException, HttpStatus } from '@nestjs/common';
-import { Roles } from 'src/role/decorators/role.decorator';
-import { RolesNames, PermissionsNames } from '../role/types';
-import { RolesGuard } from '../role/guards/role.guard';
+import { PermissionsNames } from '../role/types';
 import { Permissions } from 'src/role/decorators/permission.decorator';
 import { PermissionsGuard } from '../role/guards/permission.guard';
 import {
@@ -52,6 +50,8 @@ export class UserController {
     type: User,
     description: 'Return created user',
   })
+  @Permissions(PermissionsNames.CREATE_USERS)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -72,9 +72,8 @@ export class UserController {
     type: [User],
     description: 'Return users array',
   })
-  @Roles(RolesNames.ADMIN)
   @Permissions(PermissionsNames.READ_USERS)
-  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Get('/')
   async findAll() {
     return await this.userService.findAll();

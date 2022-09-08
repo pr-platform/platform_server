@@ -118,9 +118,6 @@ export class RoleController {
     return await this.roleService.findById(id);
   }
 
-  @ApiBody({
-    type: String,
-  })
   @ApiOkResponse({
     type: [Role],
     description: 'Return roles array',

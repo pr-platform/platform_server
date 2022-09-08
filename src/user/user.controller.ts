@@ -19,7 +19,8 @@ import { RolesNames, PermissionsNames } from '../role/types';
 import { RolesGuard } from '../role/guards/role.guard';
 import { Permissions } from 'src/role/decorators/permission.decorator';
 import { PermissionsGuard } from '../role/guards/permission.guard';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { User } from './user.model';
 
 @ApiTags('User')
 @Controller('users')
@@ -32,8 +33,20 @@ export class UserController {
 
   @ApiBody({
     type: CreateUserDto,
+    examples: {
+      CREATE_TEST_USER: {
+        value: {
+          email: 'test@test.com',
+          password: 'password',
+        },
+      },
+    },
+    description: 'Set required field for create user',
   })
-  @ApiCreatedResponse()
+  @ApiCreatedResponse({
+    type: User,
+    description: 'Return created user',
+  })
   @HttpCode(HttpStatus.CREATED)
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -50,6 +63,10 @@ export class UserController {
     }
   }
 
+  @ApiOkResponse({
+    type: [User],
+    description: 'Return users array',
+  })
   @Roles(RolesNames.ADMIN)
   @Permissions(PermissionsNames.READ_USERS)
   @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
@@ -58,6 +75,10 @@ export class UserController {
     return await this.userService.findAll();
   }
 
+  @ApiOkResponse({
+    type: User,
+    description: 'Return profile',
+  })
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   async findByAccessToken(@Headers('Authorization') bearerAccessToken: string) {

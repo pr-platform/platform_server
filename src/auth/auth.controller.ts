@@ -8,15 +8,22 @@ import {
 } from '@nestjs/common';
 import {
   ApiBody,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiHeader,
   ApiOkResponse,
+  ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { User } from '../user/user.model';
 import { LoginDataDto } from './dto/login-data.dto';
+
+class ReturnedLoginData {
+  @ApiProperty()
+  access_token: string;
+}
 
 @ApiTags('Auth')
 @Controller()
@@ -25,9 +32,22 @@ export class AuthController {
 
   @ApiBody({
     type: LoginDataDto,
+    examples: {
+      LOGIN_TEST_USER: {
+        value: {
+          email: 'test@test.com',
+          password: 'password',
+        },
+      },
+    },
+    description: 'Set required field for login',
+  })
+  @ApiCreatedResponse({
+    type: ReturnedLoginData,
+    description: 'Return access token',
   })
   @Post('auth/login')
-  async login(@Body() user) {
+  async login(@Body() user: LoginDataDto) {
     return this.authService.login(user);
   }
 
@@ -37,6 +57,7 @@ export class AuthController {
   })
   @ApiOkResponse({
     type: User,
+    description: 'Return profile',
   })
   @ApiForbiddenResponse()
   @UseGuards(JwtAuthGuard)

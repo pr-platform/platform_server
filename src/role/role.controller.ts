@@ -51,7 +51,7 @@ export class RoleController {
         },
       },
     },
-    description: 'Set requesred field for create role',
+    description: 'Set required field for create role',
   })
   @ApiCreatedResponse({
     type: Role,

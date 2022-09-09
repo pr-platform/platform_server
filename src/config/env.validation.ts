@@ -31,6 +31,12 @@ class EnvironmentVariables {
 
   @IsString()
   ADMIN_PASSWORD: string;
+
+  @IsString()
+  EMAIL_ID: string;
+
+  @IsString()
+  EMAIL_PASSWORD: string;
 }
 
 export function validate(config: Record<string, unknown>) {

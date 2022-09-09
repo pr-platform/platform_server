@@ -20,4 +20,18 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6)
   readonly password: string;
+
+  @ApiProperty({
+    type: Number,
+    description: 'User role id',
+    default: 1,
+  })
+  roleId?: number;
+
+  @ApiProperty({
+    type: Boolean,
+    description: 'Is user verified by email',
+    default: false,
+  })
+  verified?: boolean;
 }

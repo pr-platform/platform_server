@@ -75,6 +75,7 @@ export class RoleService implements OnModuleInit {
       const adminData = {
         email: this.configService.get('ADMIN_EMAIL'),
         password: this.configService.get('ADMIN_PASSWORD'),
+        verified: true,
       };
 
       let admin = await this.userService.findByEmailAndPassword(adminData);
@@ -89,7 +90,6 @@ export class RoleService implements OnModuleInit {
 
       await t.commit();
     } catch (error) {
-      console.log(error.message)
       await t.rollback();
     }
   }

@@ -50,11 +50,11 @@ export class User extends Model {
 
   @ApiProperty({
     type: Boolean,
-    description: 'User is active',
-    default: true,
+    description: 'User is verified',
+    default: false,
   })
-  @Column({ defaultValue: true })
-  isActive: boolean;
+  @Column({ defaultValue: false })
+  verified: boolean;
 
   @ApiProperty({
     type: String,

@@ -37,6 +37,18 @@ class EnvironmentVariables {
 
   @IsString()
   EMAIL_PASSWORD: string;
+
+  @IsString()
+  TEST_EMAIL_FOR_GET_MAIL: string;
+
+  @IsString()
+  OAUTH_CLIENTID: string;
+
+  @IsString()
+  OAUTH_CLIENT_SECRET: string;
+
+  @IsString()
+  OAUTH_REFRESH_TOKEN: string;
 }
 
 export function validate(config: Record<string, unknown>) {

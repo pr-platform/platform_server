@@ -1,22 +1,22 @@
 import { Module } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { MailController } from './mail.controller';
-import { MailerModule, MailerService } from '@nestjs-modules/mailer';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
+        port: 465,
+        secure: true,
         auth: {
-          user: 'supervueman@gmail.com',
-          pass: 'Sup23_er:QWE:9_Vue!MaN',
+          type: 'OAuth2',
+          user: process.env.EMAIL_ID,
+          clientId: process.env.OAUTH_CLIENTID,
+          clientSecret: process.env.OAUTH_CLIENT_SECRET,
+          refreshToken: process.env.OAUTH_REFRESH_TOKEN,
         },
-      },
-      defaults: {
-        from: '"nest-modules" <user@outlook.com>',
       },
     }),
   ],

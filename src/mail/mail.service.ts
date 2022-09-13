@@ -1,24 +1,36 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  Inject,
+  LoggerService,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private configService: ConfigService,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+  ) {}
 
   async send(mail) {
-    this.mailerService
-      .sendMail({
-        to: 'chapgen2@gmail.com', // List of receivers email address
-        from: 'supervueman@gmail.com', // Senders email address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
-        html: '<b>welcome</b>', // HTML body content
-      })
-      .then((success) => {
-        console.log(success);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    mail = {
+      to: this.configService.get('TEST_EMAIL_FOR_GET_MAIL'),
+      from: this.configService.get('ADMIN_EMAIL'),
+      subject: 'Testing Nest MailerModule ✔',
+      text: 'welcome',
+      html: '<b>welcome</b>',
+    };
+
+    try {
+      return await this.mailerService.sendMail(mail);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException(error.message);
+    }
   }
 }

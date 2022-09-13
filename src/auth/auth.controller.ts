@@ -5,7 +5,6 @@ import {
   Post,
   Request,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBody,

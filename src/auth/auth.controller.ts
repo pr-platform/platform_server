@@ -5,6 +5,7 @@ import {
   Post,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -26,8 +27,13 @@ class ReturnedLoginData {
   access_token: string;
 }
 
+class VerifiedBody {
+  @ApiProperty()
+  verified_token: string;
+}
+
 @ApiTags('Auth')
-@Controller()
+@Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -36,7 +42,7 @@ export class AuthController {
     examples: {
       LOGIN_TEST_USER: {
         value: {
-          email: 'test@test.com',
+          email: 'test@gmail.com',
           password: 'password',
         },
       },
@@ -47,7 +53,7 @@ export class AuthController {
     type: ReturnedLoginData,
     description: 'Return access token',
   })
-  @Post('auth/login')
+  @Post('login')
   async login(@Body() user: LoginDataDto) {
     return this.authService.login(user);
   }
@@ -72,7 +78,7 @@ export class AuthController {
     examples: {
       REGISTRATION_TEST_USER: {
         value: {
-          email: 'test@test.com',
+          email: 'test@gmail.com',
           password: 'password',
         },
       },
@@ -80,11 +86,22 @@ export class AuthController {
     description: 'Set required field for registration',
   })
   @ApiCreatedResponse({
-    type: User,
-    description: 'Return created user',
+    description: 'Return ok if registration user',
   })
-  @Post('/registraition')
+  @Post('/registration')
   async registration(@Body() createUserDto: CreateUserDto) {
     return await this.authService.registration(createUserDto);
+  }
+
+  @ApiOkResponse({
+    description: 'Return ok if verified',
+  })
+  @ApiBody({
+    type: VerifiedBody,
+    description: 'Set verified token',
+  })
+  @Post('/verified')
+  async verified(@Body('verified_token') verifiedToken: string) {
+    return await this.authService.verified(verifiedToken);
   }
 }

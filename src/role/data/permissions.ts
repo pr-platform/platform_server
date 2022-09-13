@@ -1,5 +1,6 @@
 import { RolesNames, PermissionsNames } from '../types';
 import { permissions as userPermissions } from '../../user/data/permissions';
+import { permissions as mailPermissions } from '../../mail/data/permissions';
 
 export const permissions = [
   {
@@ -28,4 +29,5 @@ export const permissions = [
     roles: [RolesNames.ADMIN],
   },
   ...userPermissions,
+  ...mailPermissions,
 ];

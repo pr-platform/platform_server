@@ -84,9 +84,10 @@ export class RoleService implements OnModuleInit {
         admin = await this.userService.create(adminData);
       }
 
-      const adminRole = await this.findByAlias('admin');
-
-      await adminRole.$add('users', admin);
+      if (!admin.roleId) {
+        const adminRole = await this.findByAlias('admin');
+        await adminRole.$add('users', admin);
+      }
 
       await t.commit();
     } catch (error) {

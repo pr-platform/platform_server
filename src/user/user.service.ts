@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -58,9 +62,13 @@ export class UserService {
   }
 
   async findByAccessToken(accessToken: string) {
-    const id = (this.jwtService.decode(accessToken) as any).userId;
+    const decoded = this.jwtService.decode(accessToken) as any;
 
-    return this.findById(id);
+    if (decoded.type !== 'login') {
+      throw new UnauthorizedException();
+    }
+
+    return this.findById(decoded.userId);
   }
 
   async remove(id: string) {

@@ -9,6 +9,7 @@ export enum PermissionsNames {
   READ_USERS = 'read_users',
   REMOVE_USERS = 'remove_users',
   BLOCK_USERS = 'block_users',
+  SEND_EMAIL = 'send_email',
 }
 
 export enum RolesNames {

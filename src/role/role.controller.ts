@@ -14,6 +14,7 @@ import { RoleService } from './role.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { LoggerService, HttpStatus } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -33,6 +34,7 @@ class BodyFindByAlias {
 }
 
 @ApiTags('Role')
+@ApiBearerAuth()
 @Controller('roles')
 export class RoleController {
   constructor(

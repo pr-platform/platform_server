@@ -18,6 +18,7 @@ import { PermissionsNames } from '../role/types';
 import { Permissions } from 'src/role/decorators/permission.decorator';
 import { PermissionsGuard } from '../role/guards/permission.guard';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -26,6 +27,7 @@ import {
 import { User } from './user.model';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(
@@ -39,7 +41,7 @@ export class UserController {
     examples: {
       CREATE_TEST_USER: {
         value: {
-          email: 'test@test.com',
+          email: 'test@gmail.com',
           password: 'password',
         },
       },

@@ -7,6 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -30,6 +31,7 @@ class ReturnedLoginData {
 }
 
 @ApiTags('Auth')
+@ApiBearerAuth()
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

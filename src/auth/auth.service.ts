@@ -4,6 +4,7 @@ import {
   Injectable,
   BadRequestException,
   UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -13,6 +14,9 @@ import { RoleService } from '../role/role.service';
 import { RolesNames } from '../role/types';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
+import { ResetPasswordBodyDto } from './dto/reset-password-body.dto';
+import { LoggerService } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +26,8 @@ export class AuthService {
     private readonly roleService: RoleService,
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
   ) {}
 
   async login(loginData: LoginDataDto) {
@@ -50,7 +56,6 @@ export class AuthService {
         { userId: createdUser.id, type: 'verified' },
         {
           expiresIn: 24 * 60 * 60 * 1000,
-          secret: this.configService.get('JWT_VERIFIED_SECRETE_KEY'),
         },
       );
 
@@ -70,6 +75,7 @@ export class AuthService {
         registration: 'ok',
       };
     } catch (error) {
+      this.logger.error(error.message);
       throw new BadRequestException(error.message);
     }
   }
@@ -99,6 +105,80 @@ export class AuthService {
 
     return {
       verified: 'ok',
+    };
+  }
+
+  async requestOnResetPassword(email: string) {
+    try {
+      const user = await this.userService.findOne({
+        where: {
+          email,
+        },
+      });
+
+      await user.update({
+        verified: false,
+      });
+
+      const resetToken = this.jwtService.sign(
+        { userId: user.id, type: 'reset' },
+        {
+          expiresIn: 60 * 60 * 1000,
+        },
+      );
+
+      await this.mailService.send({
+        from: this.configService.get('ADMIN_EMAIL'),
+        to: user.email,
+        subject: 'Reset password',
+        text: `Check this link ${this.configService.get(
+          'DOMAIN',
+        )}/?reset_token=${resetToken}`,
+        html: `Check this link <a href="${this.configService.get(
+          'DOMAIN',
+        )}/?reset_token=${resetToken}'">Reset password</a>`,
+      });
+
+      return {
+        requestReset: 'ok',
+      };
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async resetPassword(resetDto: ResetPasswordBodyDto) {
+    const decoded = this.jwtService.decode(resetDto.reset_token) as any;
+
+    if (decoded.type !== 'reset') {
+      throw new UnauthorizedException();
+    }
+
+    const user = await this.userService.findById(decoded.userId);
+
+    try {
+      const password = await this.userService.hashPassword(resetDto.password);
+
+      await user.update({
+        password,
+        verified: true,
+      });
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException(error.message);
+    }
+
+    await this.mailService.send({
+      from: this.configService.get('ADMIN_EMAIL'),
+      to: user.email,
+      subject: 'Your password is changed',
+      text: 'Your password is changed',
+      html: 'Your password is changed',
+    });
+
+    return {
+      reset: 'ok',
     };
   }
 }

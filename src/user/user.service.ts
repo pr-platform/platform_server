@@ -19,11 +19,15 @@ export class UserService {
     private configService: ConfigService,
     private jwtService: JwtService,
   ) {}
-  async create(createUserData: CreateUserDto) {
-    const password = await bcrypt.hash(
-      createUserData.password,
+  async hashPassword(password) {
+    return await bcrypt.hash(
+      password,
       parseInt(this.configService.get<string>('PASSWORD_SALT'), 10),
     );
+  }
+
+  async create(createUserData: CreateUserDto) {
+    const password = await this.hashPassword(createUserData.password);
 
     return await this.userModel.create<User>({
       ...createUserData,
@@ -41,6 +45,10 @@ export class UserService {
         id,
       },
     });
+  }
+
+  async findOne(query) {
+    return this.userModel.findOne(query);
   }
 
   async findByEmailAndPassword(loginData: LoginDataDto) {

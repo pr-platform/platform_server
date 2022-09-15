@@ -20,15 +20,13 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { User } from '../user/user.model';
 import { LoginDataDto } from './dto/login-data.dto';
 import { CreateUserDto } from './../user/dto/create-user.dto';
+import { ResetPasswordBodyDto } from './dto/reset-password-body.dto';
+import { RequestOnResetPasswordBodyDto } from './dto/request-on-reset-password-body.dto';
+import { VerifiedBodyDto } from './dto/verified-body.dto';
 
 class ReturnedLoginData {
   @ApiProperty()
   access_token: string;
-}
-
-class VerifiedBody {
-  @ApiProperty()
-  verified_token: string;
 }
 
 @ApiTags('Auth')
@@ -96,11 +94,50 @@ export class AuthController {
     description: 'Return ok if verified',
   })
   @ApiBody({
-    type: VerifiedBody,
+    type: VerifiedBodyDto,
     description: 'Set verified token',
   })
   @Post('/verified')
   async verified(@Body('verified_token') verifiedToken: string) {
     return await this.authService.verified(verifiedToken);
+  }
+
+  @ApiOkResponse({
+    description: 'Return ok if request reset',
+  })
+  @ApiBody({
+    type: RequestOnResetPasswordBodyDto,
+    examples: {
+      REQUEST_FOR_RESET_PASSWORD: {
+        value: {
+          email: 'test@gmail.com',
+        },
+      },
+    },
+    description: 'Send email for reset password',
+  })
+  @Post('/request-on-reset-password')
+  async requestOnResetPassword(@Body('email') email: string) {
+    return await this.authService.requestOnResetPassword(email);
+  }
+
+  @ApiOkResponse({
+    description: 'Return ok if reset',
+  })
+  @ApiBody({
+    type: ResetPasswordBodyDto,
+    examples: {
+      REQUEST_PASSWORD: {
+        value: {
+          reset_token: '',
+          password: 'password',
+        },
+      },
+    },
+    description: 'Send new password and reset token token',
+  })
+  @Post('/reset-password')
+  async resetPassword(@Body() resetDto: ResetPasswordBodyDto) {
+    return await this.authService.resetPassword(resetDto);
   }
 }

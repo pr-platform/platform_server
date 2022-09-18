@@ -10,6 +10,10 @@ import { LoginDataDto } from '../auth/dto/login-data.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RoleService } from '../role/role.service';
+import { roles } from './data/roles';
+import { permissions } from './data/permissions';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class UserService {
@@ -18,12 +22,59 @@ export class UserService {
     private userModel: typeof User,
     private configService: ConfigService,
     private jwtService: JwtService,
+    private roleService: RoleService,
+    private sequelize: Sequelize,
   ) {}
   async hashPassword(password) {
     return await bcrypt.hash(
       password,
       parseInt(this.configService.get<string>('PASSWORD_SALT'), 10),
     );
+  }
+
+  async onModuleInit() {
+    const t = await this.sequelize.transaction();
+    try {
+      await this.roleService.createRolesAndPermissionsOnInit(
+        roles,
+        permissions,
+      );
+
+      const admin = await this.findOrCreateAdmin();
+
+      if (!admin.roleId) {
+        const adminRole = await this.roleService.findByAlias('admin');
+        await adminRole.$add('users', admin);
+      }
+    } catch (error) {
+      await t.rollback();
+    }
+  }
+
+  async findOrCreateAdmin() {
+    const admin = await this.findOrCreate(
+      {
+        email: this.configService.get('ADMIN_EMAIL'),
+      },
+      {
+        email: this.configService.get('ADMIN_EMAIL'),
+        password: await this.hashPassword(
+          this.configService.get('ADMIN_PASSWORD'),
+        ),
+        verified: true,
+      },
+    );
+
+    return admin[0];
+  }
+
+  async findOrCreate(user: Partial<CreateUserDto>, defaults?: CreateUserDto) {
+    return this.userModel.findOrCreate({
+      where: {
+        ...user,
+      },
+      defaults: defaults as any,
+    });
   }
 
   async create(createUserData: CreateUserDto) {

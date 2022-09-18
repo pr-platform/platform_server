@@ -7,8 +7,7 @@ import { permissions } from './data/permissions';
 import { Permission } from './permission.model';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { Sequelize } from 'sequelize-typescript';
-import { UserService } from '../user/user.service';
-import { ConfigService } from '@nestjs/config';
+import { getRolePermissionCollaborateFromData } from './helpers/getRolePermissionCollaborateFromData';
 
 @Injectable()
 export class RoleService implements OnModuleInit {
@@ -18,81 +17,51 @@ export class RoleService implements OnModuleInit {
     @InjectModel(Permission)
     private permissionModel: typeof Permission,
     private sequelize: Sequelize,
-    private userService: UserService,
-    private configService: ConfigService,
   ) {}
 
   async onModuleInit() {
-    const rolePermissions = {};
-
-    permissions.forEach((permission) => {
-      permission.roles.forEach((role) => {
-        if (!rolePermissions[role]) {
-          rolePermissions[role] = [];
-        }
-
-        rolePermissions[role].push({
-          alias: permission.alias,
-          title: permission.title,
-        });
-      });
-    });
-
     const t = await this.sequelize.transaction();
-
     try {
-      for await (const role of roles) {
-        const existRole = await this.findByAlias(role.alias);
-
-        if (!existRole) {
-          await this.createRole(role);
-        }
-      }
-
-      const rolesAliases = Object.keys(rolePermissions);
-
-      for await (const alias of rolesAliases) {
-        const existRole = await this.findByAlias(alias);
-
-        const permissions =
-          rolePermissions[(existRole as any).dataValues.alias];
-
-        if (permissions && permissions.length) {
-          for await (const permission of permissions) {
-            let existPermission = await this.findPermissionByAlias(
-              permission.alias,
-            );
-
-            if (!existPermission) {
-              existPermission = await this.createPermission(permission);
-            }
-
-            await existRole.$add('permissions', existPermission);
-          }
-        }
-      }
-
-      const adminData = {
-        email: this.configService.get('ADMIN_EMAIL'),
-        password: this.configService.get('ADMIN_PASSWORD'),
-        verified: true,
-      };
-
-      let admin = await this.userService.findByEmailAndPassword(adminData);
-
-      if (!admin) {
-        admin = await this.userService.create(adminData);
-      }
-
-      if (!admin.roleId) {
-        const adminRole = await this.findByAlias('admin');
-        await adminRole.$add('users', admin);
-      }
-
+      await this.createRolesAndPermissionsOnInit(roles, permissions);
       await t.commit();
     } catch (error) {
       await t.rollback();
     }
+  }
+
+  async createRoleAndPermissions(rolePermission) {
+    const role = await this.findOrCreate(rolePermission.role);
+
+    for await (const permission of rolePermission.permissions) {
+      const createdOrFindedPermission = await this.findOrCreatePermission(
+        permission,
+      );
+
+      if (createdOrFindedPermission && createdOrFindedPermission.length) {
+        await role[0].$add('permissions', createdOrFindedPermission[0]);
+      }
+    }
+
+    return role;
+  }
+
+  async createRolesAndPermissionsOnInit(roles, permissions) {
+    const rolePermissions = getRolePermissionCollaborateFromData(
+      roles,
+      permissions,
+    );
+
+    for await (const rolePermission of rolePermissions) {
+      await this.createRoleAndPermissions(rolePermission);
+    }
+  }
+
+  async findOrCreate(role: CreateRoleDto) {
+    return this.roleModel.findOrCreate({
+      where: {
+        ...role,
+      },
+    });
   }
 
   async createRole(createRoleData: CreateRoleDto) {
@@ -123,6 +92,14 @@ export class RoleService implements OnModuleInit {
     return await this.permissionModel.findOne({
       where: {
         alias,
+      },
+    });
+  }
+
+  async findOrCreatePermission(permission: CreatePermissionDto) {
+    return this.permissionModel.findOrCreate({
+      where: {
+        ...permission,
       },
     });
   }

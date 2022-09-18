@@ -8,6 +8,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { User } from '../user/user.model';
+import { RoleService } from '../role/role.service';
+import { roles } from './data/roles';
+import { permissions } from './data/permissions';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class MailService {
@@ -16,7 +20,18 @@ export class MailService {
     private configService: ConfigService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
+    private roleService: RoleService,
+    private sequelize: Sequelize,
   ) {}
+
+  async onModuleInit() {
+    const t = await this.sequelize.transaction();
+    try {
+      await this.roleService.createRolesAndPermissionsOnInit(roles, permissions);
+    } catch (error) {
+      await t.rollback();
+    }
+  }
 
   async send(mail: ISendMailOptions) {
     // mail = {

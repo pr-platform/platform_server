@@ -6,6 +6,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../role/guards/permission.guard';
 import { PermissionsNames } from '../role/types';
 import { Permissions } from '../role/decorators/permission.decorator';
+import { BlockedGuard } from '../user/guard/blocked.guard';
+import { VerifiedGuard } from '../user/guard/verified.guard';
 
 class MailBodyExample {
   to: string;
@@ -34,7 +36,7 @@ export class MailController {
     },
   })
   @Permissions(PermissionsNames.READ_ROLES)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Post('/send-by-user')
   async sendByUser(@Body() mail: ISendMailOptions, @Request() req) {
     return await this.mailService.sendByUser(mail, req.user);

@@ -27,6 +27,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './guards/permission.guard';
 import { Permissions } from './decorators/permission.decorator';
 import { Role } from './role.model';
+import { VerifiedGuard } from '../user/guard/verified.guard';
+import { BlockedGuard } from './../user/guard/blocked.guard';
 
 class BodyFindByAlias {
   @ApiProperty()
@@ -61,7 +63,7 @@ export class RoleController {
   })
   @HttpCode(HttpStatus.CREATED)
   @Permissions(PermissionsNames.CREATE_ROLES)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Post('/create')
   private async create(@Body() createRoleDto: CreateRoleDto) {
     try {
@@ -93,7 +95,7 @@ export class RoleController {
     description: 'Return role',
   })
   @Permissions(PermissionsNames.READ_ROLES)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/find-by-alias')
   private async findByAlias(@Body('alias') alias: string) {
     return await this.roleService.findByAlias(alias);
@@ -114,7 +116,7 @@ export class RoleController {
     description: 'Return role',
   })
   @Permissions(PermissionsNames.READ_ROLES)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/:id')
   private async findById(@Param('id') id: number) {
     return await this.roleService.findById(id);
@@ -125,7 +127,7 @@ export class RoleController {
     description: 'Return roles array',
   })
   @Permissions(PermissionsNames.READ_ROLES)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/')
   private async findAll() {
     return await this.roleService.findAll();

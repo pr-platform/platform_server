@@ -57,6 +57,14 @@ export class User extends Model {
   verified: boolean;
 
   @ApiProperty({
+    type: Boolean,
+    description: 'User is blocked',
+    default: false,
+  })
+  @Column({ defaultValue: false })
+  blocked: boolean;
+
+  @ApiProperty({
     type: String,
     description: 'User password',
     default: '',

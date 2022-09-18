@@ -25,6 +25,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './user.model';
+import { VerifiedGuard } from './guard/verified.guard';
+import { BlockedGuard } from './guard/blocked.guard';
 
 @ApiTags('User')
 @ApiBearerAuth()
@@ -53,7 +55,7 @@ export class UserController {
     description: 'Return created user',
   })
   @Permissions(PermissionsNames.CREATE_USERS)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/create')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -75,7 +77,7 @@ export class UserController {
     description: 'Return users array',
   })
   @Permissions(PermissionsNames.READ_USERS)
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Get('/')
   async findAll() {
     return await this.userService.findAll();
@@ -85,7 +87,7 @@ export class UserController {
     type: User,
     description: 'Return profile',
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, BlockedGuard)
   @Get('/profile')
   async findByAccessToken(@Headers('Authorization') bearerAccessToken: string) {
     const accessToken = bearerAccessToken.split(' ')[1];

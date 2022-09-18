@@ -1,12 +1,7 @@
 import { Role } from './role.model';
 import { RolePermission } from './role-permission.model';
 
-import {
-  Column,
-  Model,
-  Table,
-  BelongsToMany,
-} from 'sequelize-typescript';
+import { Column, Model, Table, BelongsToMany } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Table

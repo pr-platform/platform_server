@@ -8,6 +8,7 @@ import {
   HttpCode,
   UseGuards,
   Param,
+  Put,
 } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { RoleService } from './role.service';
@@ -29,6 +30,7 @@ import { Permissions } from './decorators/permission.decorator';
 import { Role } from './role.model';
 import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from './../user/guard/blocked.guard';
+import { Permission } from './permission.model';
 
 class BodyFindByAlias {
   @ApiProperty()
@@ -131,5 +133,65 @@ export class RoleController {
   @Get('/')
   private async findAll() {
     return await this.roleService.findAll();
+  }
+
+  @ApiBody({
+    examples: {
+      SET_PERMISSIONS: {
+        value: {
+          roleId: 2,
+          permissionIds: [1, 2, 3, 4],
+        },
+      },
+    },
+    description: 'Set required field for set permissions',
+  })
+  @ApiCreatedResponse({
+    type: [Permission],
+    description: 'Return permission array',
+  })
+  @Permissions(PermissionsNames.UPDATE_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
+  @Put('/set-permissions')
+  private async addPermission(
+    @Body('roleId') roleId: number,
+    @Body('permissionIds') permissionIds: number[],
+  ) {
+    try {
+      return await this.roleService.setPermissions(roleId, permissionIds);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @ApiBody({
+    examples: {
+      SET_PERMISSIONS: {
+        value: {
+          roleId: 2,
+          permissionIds: [1, 2, 3, 4],
+        },
+      },
+    },
+    description: 'Set required field for unset permissions',
+  })
+  @ApiCreatedResponse({
+    type: Number,
+    description: 'Return count',
+  })
+  @Permissions(PermissionsNames.UPDATE_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
+  @Put('/unset-permissions')
+  private async unsetPermission(
+    @Body('roleId') roleId: number,
+    @Body('permissionIds') permissionIds: number[],
+  ) {
+    try {
+      return await this.roleService.unsetPermissions(roleId, permissionIds);
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException(error.message);
+    }
   }
 }

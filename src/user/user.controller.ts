@@ -14,7 +14,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { BadRequestException, HttpStatus } from '@nestjs/common';
-import { PermissionsNames } from '../role/types';
+import { PermissionsNames } from './data/permissions';
 import { Permissions } from 'src/role/decorators/permission.decorator';
 import { PermissionsGuard } from '../role/guards/permission.guard';
 import {

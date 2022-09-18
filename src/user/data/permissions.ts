@@ -1,4 +1,12 @@
-import { PermissionsNames, RolesNames } from '../../role/types';
+import { RolesNames } from '../../role/data/roles';
+
+export enum PermissionsNames {
+  CREATE_USERS = 'create_user',
+  UPDATE_USERS = 'update_user',
+  READ_USERS = 'read_user',
+  DELETE_USERS = 'delete_user',
+  BLOCK_USERS = 'block_user',
+}
 
 export const permissions = [
   {
@@ -17,7 +25,7 @@ export const permissions = [
     roles: [RolesNames.ADMIN],
   },
   {
-    alias: PermissionsNames.REMOVE_USERS,
+    alias: PermissionsNames.DELETE_USERS,
     title: 'Remove users',
     roles: [RolesNames.ADMIN],
   },

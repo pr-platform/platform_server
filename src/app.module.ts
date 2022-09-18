@@ -12,6 +12,7 @@ import { Dialect } from 'sequelize/types';
 import { RoleModule } from './role/role.module';
 import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { LangModule } from './lang/lang.module';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -64,6 +65,7 @@ const myFormat = winston.format.printf(
     RoleModule,
     AuthModule,
     MailModule,
+    LangModule,
   ],
   controllers: [AppController],
   providers: [AppService],

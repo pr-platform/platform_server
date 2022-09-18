@@ -1,5 +1,10 @@
-import { RolesNames } from '../types';
 import { CreateRoleDto } from '../dto/create-role.dto';
+
+export enum RolesNames {
+  DEFAULT = 'default',
+  ADMIN = 'admin',
+  BLOCKED = 'blocked',
+}
 
 export const roles: CreateRoleDto[] = [
   {

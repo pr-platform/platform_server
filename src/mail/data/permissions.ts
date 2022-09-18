@@ -1,4 +1,8 @@
-import { RolesNames, PermissionsNames } from '../../role/types';
+import { RolesNames } from '../../role/data/roles';
+
+export enum PermissionsNames {
+  SEND_EMAIL = 'send_email',
+}
 
 export const permissions = [
   {

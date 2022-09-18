@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDataDto } from './dto/login-data.dto';
 import { CreateUserDto } from './../user/dto/create-user.dto';
 import { RoleService } from '../role/role.service';
-import { RolesNames } from '../role/types';
+import { RolesNames } from '../role/data/roles';
 import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import { ResetPasswordBodyDto } from './dto/reset-password-body.dto';

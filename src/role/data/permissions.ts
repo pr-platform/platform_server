@@ -1,5 +1,13 @@
-import { RolesNames, PermissionsNames } from '../types';
+import { RolesNames } from './roles';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
+
+export enum PermissionsNames {
+  CREATE_ROLES = 'create_role',
+  UPDATE_ROLES = 'update_role',
+  READ_ROLES = 'read_role',
+  DELETE_ROLES = 'delete_role',
+  CHANGE_PERMISSIONS = 'change_permissions',
+}
 
 export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
   [
@@ -19,7 +27,7 @@ export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
       roles: [RolesNames.ADMIN, RolesNames.DEFAULT],
     },
     {
-      alias: PermissionsNames.REMOVE_ROLES,
+      alias: PermissionsNames.DELETE_ROLES,
       title: 'Remove roles',
       roles: [RolesNames.ADMIN],
     },
@@ -27,15 +35,5 @@ export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
       alias: PermissionsNames.CHANGE_PERMISSIONS,
       title: 'Change permissions',
       roles: [RolesNames.ADMIN],
-    },
-    {
-      alias: PermissionsNames.CHANGE_PERMISSIONS,
-      title: 'Change permissions',
-      roles: [RolesNames.ADMIN],
-    },
-    {
-      alias: PermissionsNames.BLOCKED_ALL,
-      title: 'Blocked all',
-      roles: [RolesNames.BLOCKED],
     },
   ];

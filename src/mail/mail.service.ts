@@ -27,7 +27,10 @@ export class MailService {
   async onModuleInit() {
     const t = await this.sequelize.transaction();
     try {
-      await this.roleService.createRolesAndPermissionsOnInit(roles, permissions);
+      await this.roleService.createRolesAndPermissionsOnInit(
+        roles,
+        permissions,
+      );
     } catch (error) {
       await t.rollback();
     }

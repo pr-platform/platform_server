@@ -23,7 +23,7 @@ import {
   ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
-import { PermissionsNames } from './types';
+import { PermissionsNames } from './data/permissions';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from './guards/permission.guard';
 import { Permissions } from './decorators/permission.decorator';
@@ -150,7 +150,7 @@ export class RoleController {
     type: [Permission],
     description: 'Return permission array',
   })
-  @Permissions(PermissionsNames.UPDATE_ROLES)
+  @Permissions(PermissionsNames.CHANGE_PERMISSIONS)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Put('/set-permissions')
   private async addPermission(
@@ -180,7 +180,7 @@ export class RoleController {
     type: Number,
     description: 'Return count',
   })
-  @Permissions(PermissionsNames.UPDATE_ROLES)
+  @Permissions(PermissionsNames.CHANGE_PERMISSIONS)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Put('/unset-permissions')
   private async unsetPermission(

@@ -1,6 +1,6 @@
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
-import { RolesNames } from '../types';
+import { RolesNames } from '../data/roles';
 
 export const getRolePermissionCollaborateFromData = (
   roles: CreateRoleDto[],

@@ -35,6 +35,10 @@ export class Translation extends Model {
   @Column
   langId: number;
 
+  @ApiProperty({
+    type: () => Lang,
+    description: 'Translation lang',
+  })
   @BelongsTo(() => Lang)
   lang: Lang;
 
@@ -46,6 +50,10 @@ export class Translation extends Model {
   @Column
   lexemeId: number;
 
+  @ApiProperty({
+    type: Lexeme,
+    description: 'Translation lexeme',
+  })
   @BelongsTo(() => Lexeme)
   lexeme: Lexeme;
 }

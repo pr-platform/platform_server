@@ -66,7 +66,7 @@ export class RoleController {
   @HttpCode(HttpStatus.CREATED)
   @Permissions(PermissionsNames.CREATE_ROLES)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
-  @Post('/create')
+  @Post('/')
   private async create(@Body() createRoleDto: CreateRoleDto) {
     try {
       return await this.roleService.createRole(createRoleDto);

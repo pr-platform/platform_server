@@ -57,7 +57,7 @@ export class UserController {
   @Permissions(PermissionsNames.CREATE_USERS)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @HttpCode(HttpStatus.CREATED)
-  @Post('/create')
+  @Post('/')
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       const createdUser = await this.userService.create(createUserDto);

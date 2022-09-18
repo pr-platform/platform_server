@@ -3,7 +3,6 @@ import {
   Column,
   Model,
   Table,
-  Index,
   ForeignKey,
   BelongsTo,
   Length,
@@ -25,7 +24,6 @@ export class User extends Model {
     required: true,
     default: '',
   })
-  @Index
   @Column({
     allowNull: false,
     unique: true,

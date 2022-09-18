@@ -5,7 +5,6 @@ import {
   Column,
   Model,
   Table,
-  Index,
   BelongsToMany,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
@@ -25,7 +24,6 @@ export class Permission extends Model {
     required: true,
     default: '',
   })
-  @Index
   @Column({
     allowNull: false,
     unique: true,

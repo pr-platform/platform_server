@@ -5,7 +5,6 @@ import {
   Column,
   Model,
   Table,
-  Index,
   IsAlphanumeric,
   HasMany,
   BelongsToMany,
@@ -27,7 +26,6 @@ export class Role extends Model {
     description: 'Role alias',
     default: null,
   })
-  @Index
   @IsAlphanumeric
   @Column({
     allowNull: false,

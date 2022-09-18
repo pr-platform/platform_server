@@ -1,10 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsString,
-  IsAlphanumeric,
-  IsNumber,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
 
 export class CreateTranslationDto {
   @ApiProperty({
@@ -12,7 +7,6 @@ export class CreateTranslationDto {
     default: '',
   })
   @IsString()
-  @IsAlphanumeric()
   readonly translation: string;
 
   @ApiProperty({

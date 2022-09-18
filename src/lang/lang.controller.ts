@@ -1,5 +1,17 @@
-import { Controller, HttpCode, Post, HttpStatus, Body } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  HttpCode,
+  Post,
+  HttpStatus,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LangService } from './lang.service';
 import { Lang } from './lang.model';
 import { CreateLangDto } from './dto/create-lang-dto';
@@ -7,8 +19,15 @@ import { Lexeme } from './lexeme.model';
 import { CreateLexemeDto } from './dto/create-lexeme-dto';
 import { CreateTranslationDto } from './dto/create-translation-dto';
 import { Translation } from './translation.model';
+import { Permissions } from 'src/role/decorators/permission.decorator';
+import { PermissionsNames } from './data/permissions';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../role/guards/permission.guard';
+import { VerifiedGuard } from '../user/guard/verified.guard';
+import { BlockedGuard } from '../user/guard/blocked.guard';
 
 @ApiTags('Lang')
+@ApiBearerAuth()
 @Controller('lang')
 export class LangController {
   constructor(private readonly langService: LangService) {}
@@ -28,6 +47,8 @@ export class LangController {
     type: Lang,
     description: 'Return created lang',
   })
+  @Permissions(PermissionsNames.CREATE_LANG)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/')
   async createLang(@Body() createLangDto: CreateLangDto) {
@@ -49,6 +70,8 @@ export class LangController {
     type: Lexeme,
     description: 'Return created lexeme',
   })
+  @Permissions(PermissionsNames.CREATE_LEXEME)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/lexeme')
   async createLexeme(@Body() createLexemeDto: CreateLexemeDto) {
@@ -70,6 +93,8 @@ export class LangController {
     type: Translation,
     description: 'Return created translation',
   })
+  @Permissions(PermissionsNames.CREATE_TRANSLATION)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post('/translation')
   async createTransalation(@Body() createTranslationDto: CreateTranslationDto) {

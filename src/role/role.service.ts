@@ -111,4 +111,16 @@ export class RoleService implements OnModuleInit {
   async createPermissions(permissions: CreatePermissionDto[]) {
     return await this.permissionModel.bulkCreate(permissions as any);
   }
+
+  async setPermissions(roleId: number, permissionIds: number[]) {
+    const role = await this.findById(roleId);
+
+    return await role.$add('permissions', permissionIds);
+  }
+
+  async unsetPermissions(roleId: number, permissionIds: number[]) {
+    const role = await this.findById(roleId);
+
+    return await role.$remove('permissions', permissionIds);
+  }
 }

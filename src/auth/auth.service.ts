@@ -72,7 +72,7 @@ export class AuthService {
       });
 
       return {
-        registration: 'ok',
+        message: 'ok',
       };
     } catch (error) {
       this.logger.error(error.message);
@@ -104,7 +104,7 @@ export class AuthService {
     }
 
     return {
-      verified: 'ok',
+      message: 'ok',
     };
   }
 
@@ -140,7 +140,7 @@ export class AuthService {
       });
 
       return {
-        requestReset: 'ok',
+        message: 'ok',
       };
     } catch (error) {
       this.logger.error(error.message);
@@ -178,7 +178,7 @@ export class AuthService {
     });
 
     return {
-      reset: 'ok',
+      message: 'ok',
     };
   }
 }

@@ -56,4 +56,17 @@ export class LangService {
 
     throw new BadRequestException();
   }
+
+  async findAllLangs(includeDictionary: boolean) {
+    return await this.langModel.findAll(
+      includeDictionary && {
+        include: [
+          {
+            association: 'translations',
+            include: ['lexeme'],
+          },
+        ],
+      },
+    );
+  }
 }

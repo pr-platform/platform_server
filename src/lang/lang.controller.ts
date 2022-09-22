@@ -5,11 +5,15 @@ import {
   HttpStatus,
   Body,
   UseGuards,
+  Get,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiQuery,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { LangService } from './lang.service';
@@ -26,6 +30,9 @@ import { PermissionsGuard } from '../role/guards/permission.guard';
 import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from '../user/guard/blocked.guard';
 
+class FindAllLangsQuery {
+  includeDictionary: boolean
+}
 @ApiTags('Lang')
 @ApiBearerAuth()
 @Controller('lang')
@@ -99,5 +106,19 @@ export class LangController {
   @Post('/translation')
   async createTransalation(@Body() createTranslationDto: CreateTranslationDto) {
     return this.langService.createTranslation(createTranslationDto);
+  }
+
+  @ApiQuery({
+    type: Boolean,
+    name: 'includeDictionary',
+    required: false,
+  })
+  @ApiResponse({
+    type: [Lang],
+    description: 'Return all langs',
+  })
+  @Get('/find-all-langs')
+  async findAllLangs(@Query('includeDictionary') includeDictionary: string) {
+    return await this.langService.findAllLangs(includeDictionary === 'true');
   }
 }

@@ -9,6 +9,7 @@ import {
   UseGuards,
   Param,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { RoleService } from './role.service';
@@ -21,6 +22,7 @@ import {
   ApiOkResponse,
   ApiParam,
   ApiProperty,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionsNames } from './data/permissions';
@@ -32,9 +34,12 @@ import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from './../user/guard/blocked.guard';
 import { Permission } from './permission.model';
 
-class BodyFindByAlias {
+class QueryFindByAlias {
   @ApiProperty()
   alias: string;
+
+  @ApiProperty()
+  include_permissions?: boolean;
 }
 
 @ApiTags('Role')
@@ -76,21 +81,16 @@ export class RoleController {
     }
   }
 
-  @ApiBody({
-    type: BodyFindByAlias,
+  @ApiQuery({
+    name: 'alias',
+    type: QueryFindByAlias,
     examples: {
       ADMIN_ROLE: {
         value: {
           alias: 'admin',
         },
       },
-      DEFAULT_ROLE: {
-        value: {
-          alias: 'default',
-        },
-      },
     },
-    description: 'Set role alias',
   })
   @ApiOkResponse({
     type: Role,
@@ -99,8 +99,12 @@ export class RoleController {
   @Permissions(PermissionsNames.READ_ROLES)
   @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/find-by-alias')
-  private async findByAlias(@Body('alias') alias: string) {
-    return await this.roleService.findByAlias(alias);
+  private async findByAlias(@Query() query: QueryFindByAlias) {
+    console.log(query)
+    return await this.roleService.findByAlias(
+      query.alias,
+      (query.include_permissions as unknown as string) === 'true',
+    );
   }
 
   @ApiParam({

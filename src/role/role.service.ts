@@ -72,11 +72,12 @@ export class RoleService implements OnModuleInit {
     return await this.roleModel.bulkCreate(createRoleData as any);
   }
 
-  async findByAlias(alias: string) {
+  async findByAlias(alias: string, includePermissions?: boolean) {
     return await this.roleModel.findOne({
       where: {
         alias,
       },
+      ...(includePermissions && { include: ['permissions'] }),
     });
   }
 

@@ -100,7 +100,6 @@ export class RoleController {
   @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/find-by-alias')
   private async findByAlias(@Query() query: QueryFindByAlias) {
-    console.log(query)
     return await this.roleService.findByAlias(
       query.alias,
       (query.include_permissions as unknown as string) === 'true',

@@ -135,7 +135,7 @@ export class LangController {
   })
   @ApiResponse({
     type: [Lang],
-    description: 'Return all langs',
+    description: 'Return lang',
   })
   @Get('/:id')
   async findById(

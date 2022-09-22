@@ -69,4 +69,18 @@ export class LangService {
       },
     );
   }
+
+  async findById(id: number, includeDictionary?: boolean) {
+    return await this.langModel.findByPk(
+      id,
+      includeDictionary && {
+        include: [
+          {
+            association: 'translations',
+            include: ['lexeme'],
+          },
+        ],
+      },
+    );
+  }
 }

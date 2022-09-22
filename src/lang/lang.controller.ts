@@ -7,11 +7,13 @@ import {
   UseGuards,
   Get,
   Query,
+  Param,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -31,7 +33,7 @@ import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from '../user/guard/blocked.guard';
 
 class FindAllLangsQuery {
-  includeDictionary: boolean
+  includeDictionary: boolean;
 }
 @ApiTags('Lang')
 @ApiBearerAuth()
@@ -110,7 +112,7 @@ export class LangController {
 
   @ApiQuery({
     type: Boolean,
-    name: 'includeDictionary',
+    name: 'include_dictionary',
     required: false,
   })
   @ApiResponse({
@@ -118,7 +120,28 @@ export class LangController {
     description: 'Return all langs',
   })
   @Get('/find-all-langs')
-  async findAllLangs(@Query('includeDictionary') includeDictionary: string) {
+  async findAllLangs(@Query('include_dictionary') includeDictionary: string) {
     return await this.langService.findAllLangs(includeDictionary === 'true');
+  }
+
+  @ApiQuery({
+    type: Boolean,
+    name: 'include_dictionary',
+    required: false,
+  })
+  @ApiParam({
+    type: Number,
+    name: 'id',
+  })
+  @ApiResponse({
+    type: [Lang],
+    description: 'Return all langs',
+  })
+  @Get('/:id')
+  async findById(
+    @Param('id') id: number,
+    @Query('include_dictionary') includeDictionary: string,
+  ) {
+    return await this.langService.findById(id, includeDictionary === 'true');
   }
 }

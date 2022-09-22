@@ -119,7 +119,7 @@ export class LangController {
     type: [Lang],
     description: 'Return all langs',
   })
-  @Get('/find-all-langs')
+  @Get('/')
   async findAllLangs(@Query('include_dictionary') includeDictionary: string) {
     return await this.langService.findAllLangs(includeDictionary === 'true');
   }

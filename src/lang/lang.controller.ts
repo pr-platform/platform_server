@@ -32,9 +32,6 @@ import { PermissionsGuard } from '../role/guards/permission.guard';
 import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from '../user/guard/blocked.guard';
 
-class FindAllLangsQuery {
-  includeDictionary: boolean;
-}
 @ApiTags('Lang')
 @ApiBearerAuth()
 @Controller('lang')

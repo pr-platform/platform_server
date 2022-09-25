@@ -14,6 +14,7 @@ import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { LangModule } from './lang/lang.module';
 import { SmscModule } from './smsc/smsc.module';
+import { FilesystemModule } from './filesystem/filesystem.module';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -68,6 +69,7 @@ const myFormat = winston.format.printf(
     MailModule,
     LangModule,
     SmscModule,
+    FilesystemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

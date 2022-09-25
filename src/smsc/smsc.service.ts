@@ -6,7 +6,6 @@ import { Sequelize } from 'sequelize-typescript';
 import { RoleService } from '../role/role.service';
 import { ConfigService } from '@nestjs/config';
 import SendSmsBodyDto from './dto/send-sms-body.dto';
-import { ResponseOnSendSms } from './dto/response-on-send-sms.dto';
 import { Response } from 'express';
 
 const smsc = new SmscApi();
@@ -40,7 +39,7 @@ export class SmscService {
     });
   }
 
-  async configure(config) {
+  configure(config) {
     smsc.configure(config);
   }
 

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export default class BalanceDto {
+export default class SmscBalanceDto {
   @ApiProperty()
   balance: string;
 }

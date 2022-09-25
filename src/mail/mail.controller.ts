@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { MailService } from './mail.service';
 import { ISendMailOptions } from '@nestjs-modules/mailer';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -8,12 +8,18 @@ import { PermissionsNames } from './data/permissions';
 import { Permissions } from '../role/decorators/permission.decorator';
 import { BlockedGuard } from '../user/guard/blocked.guard';
 import { VerifiedGuard } from '../user/guard/verified.guard';
+import { Address } from 'nodemailer/lib/mailer';
+import { AttachmentLikeObject } from '@nestjs-modules/mailer/dist/interfaces/send-mail-options.interface';
 
-class MailBodyExample {
-  to: string;
+class MailBodyExample implements ISendMailOptions {
+  @ApiProperty()
+  to: string | string[] | Address;
+  @ApiProperty()
   subject: string;
-  text: string;
-  html: string;
+  @ApiProperty()
+  text: string | Buffer | AttachmentLikeObject;
+  @ApiProperty()
+  html: string | Buffer;
 }
 
 @ApiTags('Mail')

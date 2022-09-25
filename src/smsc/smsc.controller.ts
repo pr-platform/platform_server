@@ -11,7 +11,7 @@ import {
 import { SmscService } from './smsc.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import SendSmsBodyDto from './dto/send-sms-body.dto';
-import { ResponseOnSendSms } from './dto/response-on-send-sms.dto';
+import { SmscResponseOnSendSms } from './dto/response-on-send-sms.dto';
 import BalanceDto from './dto/balance.dto';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Permissions } from 'src/role/decorators/permission.decorator';
@@ -52,7 +52,7 @@ export class SmscController {
     description: 'Set phones and message',
   })
   @ApiResponse({
-    type: ResponseOnSendSms,
+    type: SmscResponseOnSendSms,
     description: 'Return sms data id',
   })
   @Permissions(PermissionsNames.SEND_SMS)

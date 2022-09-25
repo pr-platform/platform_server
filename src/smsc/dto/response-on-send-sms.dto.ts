@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ResponseOnSendSms {
+export class SmscResponseOnSendSms {
   @ApiProperty()
   id: number;
 

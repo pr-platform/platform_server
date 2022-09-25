@@ -46,6 +46,7 @@ export class UserService {
         const adminRole = await this.roleService.findByAlias('admin');
         await adminRole.$add('users', admin);
       }
+      await t.commit();
     } catch (error) {
       await t.rollback();
     }

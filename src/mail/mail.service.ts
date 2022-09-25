@@ -31,6 +31,7 @@ export class MailService {
         roles,
         permissions,
       );
+      await t.commit();
     } catch (error) {
       await t.rollback();
     }

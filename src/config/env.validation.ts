@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { IsNumber, IsString, validateSync } from 'class-validator';
+import { IsBoolean, IsNumber, IsString, validateSync } from 'class-validator';
 
 class EnvironmentVariables {
   @IsString()
@@ -49,6 +49,15 @@ class EnvironmentVariables {
 
   @IsString()
   OAUTH_REFRESH_TOKEN: string;
+
+  @IsString()
+  SMSC_LOGIN: string;
+
+  @IsString()
+  SMSC_PASSWORD: string;
+
+  @IsBoolean()
+  SMSC_SSL: boolean;
 }
 
 export function validate(config: Record<string, unknown>) {

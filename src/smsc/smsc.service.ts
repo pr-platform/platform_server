@@ -44,18 +44,15 @@ export class SmscService {
     smsc.configure(config);
   }
 
-  async sendSms(
-    data: SendSmsBodyDto,
-    res: Response,
-  ): Promise<ResponseOnSendSms | void> {
-    await smsc.send_sms(data, (data, raw, err, code) => {
+  sendSms(data: SendSmsBodyDto, res: Response) {
+    smsc.send_sms(data, (data, raw, err, code) => {
       if (err) throw new BadRequestException(`Error: ${err}, Code: ${code}`);
 
       res.send({ ...data });
     });
   }
 
-  async getBalance(res: Response) {
+  getBalance(res: Response) {
     smsc.get_balance((balance, raw, err, code) => {
       if (err) throw new BadRequestException(`Error: ${err}, Code: ${code}`);
 

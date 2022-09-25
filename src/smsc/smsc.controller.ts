@@ -58,9 +58,9 @@ export class SmscController {
   @Permissions(PermissionsNames.SEND_SMS)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Post('/send-sms')
-  async sendSms(@Body() data: SendSmsBodyDto, @Res() res) {
+  sendSms(@Body() data: SendSmsBodyDto, @Res() res) {
     try {
-      return await this.smscService.sendSms(data, res);
+      return this.smscService.sendSms(data, res);
     } catch (error) {
       this.logger.error(error.message);
     }
@@ -81,12 +81,12 @@ export class SmscController {
   @Permissions(PermissionsNames.GET_BALANCE)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Get('/balance')
-  async getBalance(@Res() res) {
-    return await this.smscService.getBalance(res);
-
-    // res.send({
-    //   balance,
-    // });
+  getBalance(@Res() res) {
+    try {
+      return this.smscService.getBalance(res);
+    } catch (error) {
+      this.logger.error(error.message);
+    }
   }
 
   async getSmsStatus() {

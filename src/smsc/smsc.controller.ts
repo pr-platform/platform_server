@@ -31,11 +31,11 @@ export class SmscController {
     private readonly logger: LoggerService,
   ) {}
 
-  async addAccount() {
+  addAccount() {
     // TODO: Add endpoint
   }
 
-  async getAccount() {
+  getAccount() {
     // TODO: Add endpoint
   }
 
@@ -89,11 +89,11 @@ export class SmscController {
     }
   }
 
-  async getSmsStatus() {
+  getSmsStatus() {
     // TODO: Add endpoint
   }
 
-  async getSmsCost() {
+  getSmsCost() {
     // TODO: Add endpoint
   }
 }

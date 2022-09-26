@@ -12,6 +12,11 @@ import { extname } from 'path';
 import { mkdirSync, promises } from 'fs';
 import { User } from '../user/user.model';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Permissions } from '../role/decorators/permission.decorator';
+import { PermissionsNames } from './data/permissions';
+import { PermissionsGuard } from '../role/guards/permission.guard';
+import { VerifiedGuard } from '../user/guard/verified.guard';
+import { BlockedGuard } from '../user/guard/blocked.guard';
 
 @ApiTags('Filesystem')
 @ApiBearerAuth()
@@ -29,7 +34,8 @@ export class FilesystemController {
       },
     },
   })
-  @UseGuards(JwtAuthGuard)
+  @Permissions(PermissionsNames.UPLOAD_FILE)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Post('upload')
   @UseInterceptors(
     AnyFilesInterceptor({

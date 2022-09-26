@@ -82,4 +82,20 @@ export class FilesystemController {
   uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
     return files.map((file) => file.filename);
   }
+
+  mkdir() {
+    // TODO: mkdir
+  }
+
+  rmdir() {
+    // TODO: rmdir
+  }
+
+  mv() {
+    // TODO: mv
+  }
+
+  getFsTree() {
+    // TODO: get files system tree
+  }
 }

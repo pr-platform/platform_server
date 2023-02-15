@@ -21,8 +21,8 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000, () => {
-    console.log('Server started on http://localhost:3000');
+  await app.listen(process.env.PORT, () => {
+    console.log(`Server started on http://localhost:${process.env.PORT}`);
   });
 }
 bootstrap();

@@ -8,9 +8,12 @@ import {
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Translation } from './translation.model';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Table
 export class Lang extends Model {
+  @Field(type => Int)
   @ApiProperty({
     type: Number,
     description: 'Lang id',
@@ -18,6 +21,7 @@ export class Lang extends Model {
   })
   declare id: number;
 
+  @Field({ nullable: true, description: 'Lang alias' })
   @ApiProperty({
     type: String,
     required: true,
@@ -32,6 +36,7 @@ export class Lang extends Model {
   })
   alias: string;
 
+  @Field(type => [Translation])
   @HasMany(() => Translation)
   translations: Translation[];
 }

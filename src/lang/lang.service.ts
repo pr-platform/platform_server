@@ -71,6 +71,18 @@ export class LangService {
     );
   }
 
+  async findAllTranslations(langId: number) {
+    return await this.translationModel.findAll({
+      where: {
+        langId,
+      }
+    });
+  }
+
+  async findLexemeById(id: number) {
+    return await this.lexemeModel.findByPk(id);
+  }
+
   async findById(id: number, includeDictionary?: boolean) {
     return await this.langModel.findByPk(
       id,
@@ -83,5 +95,9 @@ export class LangService {
         ],
       },
     );
+  }
+
+  async findTranslationById(id: number) {
+    return await this.translationModel.findByPk(id);
   }
 }

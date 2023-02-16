@@ -7,20 +7,24 @@ import {
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Translation } from './translation.model';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Table
 export class Lexeme extends Model {
+  @Field(type => Int)
   @ApiProperty({
     type: Number,
-    description: 'Role id',
+    description: 'Lexen id',
     default: null,
   })
   declare id: number;
 
+  @Field({ nullable: true, description: 'Translation text' })
   @ApiProperty({
     type: String,
     required: true,
-    description: 'Role alias',
+    description: 'Lexeme',
     default: null,
   })
   @IsAlphanumeric
@@ -30,6 +34,7 @@ export class Lexeme extends Model {
   })
   lexeme: string;
 
+  @Field(type => [Translation])
   @HasMany(() => Translation)
   translations: Translation[];
 }

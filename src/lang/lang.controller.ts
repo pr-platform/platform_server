@@ -116,6 +116,7 @@ export class LangController {
     type: [Lang],
     description: 'Return all langs',
   })
+  @UseGuards(JwtAuthGuard)
   @Get('/')
   async findAllLangs(@Query('include_dictionary') includeDictionary: string) {
     return await this.langService.findAllLangs(includeDictionary === 'true');
@@ -134,6 +135,7 @@ export class LangController {
     type: [Lang],
     description: 'Return lang',
   })
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Get('/:id')
   async findById(
     @Param('id') id: number,

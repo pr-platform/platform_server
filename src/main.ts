@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { GraphQLSchemaHost } from '@nestjs/graphql/dist/graphql-schema.host';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

@@ -8,9 +8,12 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Lang } from './lang.model';
 import { Lexeme } from './lexeme.model';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
+@ObjectType()
 @Table
 export class Translation extends Model {
+  @Field(type => Int)
   @ApiProperty({
     type: Number,
     description: 'Translation id',
@@ -18,6 +21,7 @@ export class Translation extends Model {
   })
   declare id: number;
 
+  @Field({ nullable: true, description: 'Translation text' })
   @ApiProperty({
     type: String,
     required: true,
@@ -27,6 +31,7 @@ export class Translation extends Model {
   @Column
   translation: string;
 
+  @Field(type => Int)
   @ApiProperty({
     type: Number,
     description: 'Translation lang id',
@@ -35,6 +40,7 @@ export class Translation extends Model {
   @Column
   langId: number;
 
+  @Field(type => Lang)
   @ApiProperty({
     type: () => Lang,
     description: 'Translation lang',
@@ -42,6 +48,7 @@ export class Translation extends Model {
   @BelongsTo(() => Lang)
   lang: Lang;
 
+  @Field(type => Int)
   @ApiProperty({
     type: Number,
     description: 'Translation lexeme id',
@@ -50,6 +57,7 @@ export class Translation extends Model {
   @Column
   lexemeId: number;
 
+  @Field(type => Lexeme)
   @ApiProperty({
     type: Lexeme,
     description: 'Translation lexeme',

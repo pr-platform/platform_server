@@ -15,6 +15,11 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { LangModule } from './lang/lang.module';
 import { SmscModule } from './smsc/smsc.module';
 import { FilesystemModule } from './filesystem/filesystem.module';
+import { FakerModule } from './faker/faker.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+import { AppResolver } from './app.resolver';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -70,8 +75,13 @@ const myFormat = winston.format.printf(
     LangModule,
     SmscModule,
     FilesystemModule,
+    FakerModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppResolver],
 })
 export class AppModule {}

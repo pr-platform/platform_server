@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Lexeme {
+  id: Int!
+
+  """Translation text"""
+  lexeme: String
+  translations: [Translation!]!
+}
+
+type Translation {
+  id: Int!
+
+  """Translation text"""
+  translation: String
+  langId: Int!
+  lang: Lang!
+  lexemeId: Int!
+  lexeme: Lexeme!
+}
+
+type Lang {
+  id: Int!
+
+  """Lang alias"""
+  alias: String
+  translations: [Translation!]!
+}
+
+type Query {
+  sayHello: String!
+  lang(id: Int!): Lang!
+  translation(id: Int!): Translation!
+}

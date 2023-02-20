@@ -2,7 +2,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { PermissionsNames } from '../data/permissions';
-import { GqlExecutionContext } from '@nestjs/graphql'
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { ContextTypes } from 'src/types';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class PermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: any | ExecutionContextHost): boolean {
-    const contextType = (context as any).contextType as string
+    const contextType = (context as any).contextType as string;
 
     const requiredPermissions = this.reflector.getAllAndOverride<
       PermissionsNames[]
@@ -20,13 +20,15 @@ export class PermissionsGuard implements CanActivate {
       return true;
     }
 
-    let user
+    let user;
 
     if (contextType === ContextTypes.GRAPHQL) {
       user = GqlExecutionContext.create(context).getContext()?.req?.user;
     } else {
-      user = context.switchToHttp().getRequest();
+      user = context.switchToHttp().getRequest()?.user;
     }
+
+    console.log(user);
 
     return requiredPermissions.some((permission) =>
       user.role?.permissions.find(

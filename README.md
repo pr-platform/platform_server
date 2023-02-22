@@ -30,6 +30,12 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-[Swagger](http://localhost:3000/api)
+## Mail settings
+[Article](https://www.freecodecamp.org/news/use-nodemailer-to-send-emails-from-your-node-js-server/)
 
+## Links
+
+```
+[Swagger](http://localhost:3000/api)
 [Graphql](http://localhost:3000/graphql)
+```

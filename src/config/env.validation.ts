@@ -3,6 +3,9 @@ import { IsBoolean, IsNumber, IsString, validateSync } from 'class-validator';
 
 class EnvironmentVariables {
   @IsString()
+  ENABLE_CORS_ORIGINS: string;
+
+  @IsString()
   DB_HOST: string;
 
   @IsNumber()

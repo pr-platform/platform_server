@@ -11,6 +11,12 @@ async function bootstrap() {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.setGlobalPrefix('api');
 
+  const origin = process.env.ENABLE_CORS_ORIGINS?.split(',');
+
+  if (origin && origin.length) {
+    app.enableCors({ origin });
+  }
+
   const config = new DocumentBuilder()
     .setTitle('PR_PLATFORM')
     .setDescription('The platform API description')

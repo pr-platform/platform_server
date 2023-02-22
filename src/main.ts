@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { GraphQLSchemaHost } from '@nestjs/graphql/dist/graphql-schema.host';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,6 +10,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.setGlobalPrefix('api');
+
+  const origin = process.env.ENABLE_CORS_ORIGINS?.split(',');
+
+  if (origin && origin.length) {
+    app.enableCors({ origin });
+  }
 
   const config = new DocumentBuilder()
     .setTitle('PR_PLATFORM')

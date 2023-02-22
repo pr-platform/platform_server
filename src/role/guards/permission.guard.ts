@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 import { PermissionsNames } from '../data/permissions';
@@ -27,8 +27,6 @@ export class PermissionsGuard implements CanActivate {
     } else {
       user = context.switchToHttp().getRequest()?.user;
     }
-
-    console.log(user);
 
     return requiredPermissions.some((permission) =>
       user.role?.permissions.find(

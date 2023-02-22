@@ -45,7 +45,7 @@ export class SmscController {
       SEND_SMS_DATA: {
         value: {
           phones: ['79999999999'],
-          message: 'Hello!',
+          mes: 'Hello!',
         },
       },
     },

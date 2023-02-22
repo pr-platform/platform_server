@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { RoleService } from '../role/role.service';
 import { roles } from './data/roles';
 import { permissions } from './data/permissions';

@@ -65,10 +65,10 @@ export class AuthService {
         subject: 'Verified your account',
         text: `Check this link ${this.configService.get(
           'DOMAIN',
-        )}/?verified_token=${verifiedToken}`,
+        )}/verified/?verified_token=${verifiedToken}`,
         html: `Check this link <a href="${this.configService.get(
           'DOMAIN',
-        )}/?verified_token=${verifiedToken}'">Verified</a>`,
+        )}/verified/?verified_token=${verifiedToken}">Verified</a>`,
       });
 
       return {
@@ -133,10 +133,10 @@ export class AuthService {
         subject: 'Reset password',
         text: `Check this link ${this.configService.get(
           'DOMAIN',
-        )}/?reset_token=${resetToken}`,
+        )}/reset-password/?reset_token=${resetToken}`,
         html: `Check this link <a href="${this.configService.get(
           'DOMAIN',
-        )}/?reset_token=${resetToken}'">Reset password</a>`,
+        )}/reset-password/?reset_token=${resetToken}">Reset password</a>`,
       });
 
       return {

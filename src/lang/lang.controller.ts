@@ -32,6 +32,10 @@ import { PermissionsGuard } from '../role/guards/permission.guard';
 import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from '../user/guard/blocked.guard';
 
+class LangFindOneWhere {
+  lang: string;
+}
+
 @ApiTags('Lang')
 @ApiBearerAuth()
 @Controller('lang')
@@ -64,7 +68,7 @@ export class LangController {
   @ApiBody({
     type: CreateLexemeDto,
     examples: {
-      CREATE_TEST_ROLE: {
+      CREATE_TEST_LEXEME: {
         value: {
           lexeme: 'test',
         },
@@ -87,7 +91,7 @@ export class LangController {
   @ApiBody({
     type: CreateTranslationDto,
     examples: {
-      CREATE_TEST_ROLE: {
+      CREATE_TEST_TRANSLATION: {
         value: {
           translation: 'Test',
         },
@@ -116,10 +120,35 @@ export class LangController {
     type: [Lang],
     description: 'Return all langs',
   })
-  @UseGuards(JwtAuthGuard)
   @Get('/')
   async findAllLangs(@Query('include_dictionary') includeDictionary: string) {
     return await this.langService.findAllLangs(includeDictionary === 'true');
+  }
+
+  @ApiQuery({
+    type: Boolean,
+    name: 'include_dictionary',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'where',
+    schema: {
+      example: {
+        alias: 'ru',
+      },
+    },
+    required: false,
+  })
+  @ApiResponse({
+    type: [Lang],
+    description: 'Return all langs',
+  })
+  @Get('/find-one')
+  async findOne(
+    @Query('where') where: string,
+    @Query('include_dictionary') includeDictionary: string,
+  ) {
+    return await this.langService.findOne(where, includeDictionary === 'true');
   }
 
   @ApiQuery({
@@ -135,7 +164,6 @@ export class LangController {
     type: [Lang],
     description: 'Return lang',
   })
-  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @Get('/:id')
   async findById(
     @Param('id') id: number,

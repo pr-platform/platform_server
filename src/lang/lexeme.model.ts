@@ -15,19 +15,18 @@ export class Lexeme extends Model {
   @Field(type => Int)
   @ApiProperty({
     type: Number,
-    description: 'Lexen id',
+    description: 'Lexeme id',
     default: null,
   })
   declare id: number;
 
-  @Field({ nullable: true, description: 'Translation text' })
+  @Field({ nullable: true, description: 'Lexeme text' })
   @ApiProperty({
     type: String,
     required: true,
     description: 'Lexeme',
     default: null,
   })
-  @IsAlphanumeric
   @Column({
     allowNull: false,
     unique: true,

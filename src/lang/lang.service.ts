@@ -9,6 +9,7 @@ import { CreateTranslationDto } from './dto/create-translation-dto';
 import { Sequelize } from 'sequelize-typescript';
 import { roles } from './data/roles';
 import { permissions } from './data/permissions';
+import langs from './data/langs';
 import { RoleService } from '../role/role.service';
 
 @Injectable()
@@ -34,6 +35,49 @@ export class LangService {
       await t.commit();
     } catch (error) {
       await t.rollback();
+    }
+
+    try {
+      this.createLangsAndTranslationsOnInit();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async createLangsAndTranslationsOnInit() {
+    for await (const lang of langs) {
+      let existLang = await this.findByAlias(lang.alias);
+
+      if (!existLang) {
+        existLang = await this.createLang({
+          alias: lang.alias,
+        });
+      }
+
+      for await (const lexeme of Object.keys(lang.dictionary)) {
+        let existLexeme = await this.findLexemeByLexeme(lexeme);
+
+        if (!existLexeme) {
+          existLexeme = await this.createLexeme({
+            lexeme,
+          });
+        }
+
+        const translation = lang.dictionary[lexeme];
+
+        let existTranslation = await this.findOneTranslation({
+          translation,
+          langId: existLang.id,
+        });
+
+        if (!existTranslation) {
+          existTranslation = await this.createTranslation({
+            translation,
+            langId: existLang.id,
+            lexemeId: existLexeme.id,
+          });
+        }
+      }
     }
   }
 
@@ -75,12 +119,34 @@ export class LangService {
     return await this.translationModel.findAll({
       where: {
         langId,
-      }
+      },
+    });
+  }
+
+  async findOneTranslation(where: any) {
+    return await this.translationModel.findOne({
+      where,
+    });
+  }
+
+  async findTranslationByTranslation(translation: string) {
+    return await this.translationModel.findOne({
+      where: {
+        translation,
+      },
     });
   }
 
   async findLexemeById(id: number) {
     return await this.lexemeModel.findByPk(id);
+  }
+
+  async findLexemeByLexeme(lexeme: string) {
+    return await this.lexemeModel.findOne({
+      where: {
+        lexeme,
+      },
+    });
   }
 
   async findById(id: number, includeDictionary?: boolean) {
@@ -95,6 +161,30 @@ export class LangService {
         ],
       },
     );
+  }
+
+  async findOne(where, includeDictionary) {
+    const args = {
+      where,
+      ...(includeDictionary && {
+        include: [
+          {
+            association: 'translations',
+            include: ['lexeme'],
+          },
+        ],
+      }),
+    };
+
+    return await this.langModel.findOne(args);
+  }
+
+  async findByAlias(alias: string) {
+    return await this.langModel.findOne({
+      where: {
+        alias,
+      },
+    });
   }
 
   async findTranslationById(id: number) {

@@ -8,6 +8,5 @@ export class CreateLexemeDto {
     default: '',
   })
   @IsString()
-  @IsAlphanumeric()
   readonly lexeme: string;
 }

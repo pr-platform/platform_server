@@ -5,7 +5,7 @@
 type Lexeme {
   id: Int!
 
-  """Translation text"""
+  """Lexeme text"""
   lexeme: String
   translations: [Translation!]!
 }

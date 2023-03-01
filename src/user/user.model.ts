@@ -36,7 +36,7 @@ export class User extends Model {
     default: '',
   })
   @Column
-  firstName: string;
+  firstname: string;
 
   @ApiProperty({
     type: String,
@@ -44,7 +44,7 @@ export class User extends Model {
     default: '',
   })
   @Column
-  lastName: string;
+  lastname: string;
 
   @ApiProperty({
     type: Boolean,

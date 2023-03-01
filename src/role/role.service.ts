@@ -8,6 +8,7 @@ import { Permission } from './permission.model';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { Sequelize } from 'sequelize-typescript';
 import { getRolePermissionCollaborateFromData } from './helpers/getRolePermissionCollaborateFromData';
+import { ModuleInfoService } from '../moduleInfo/moduleInfo.service';
 
 @Injectable()
 export class RoleService implements OnModuleInit {
@@ -17,15 +18,28 @@ export class RoleService implements OnModuleInit {
     @InjectModel(Permission)
     private permissionModel: typeof Permission,
     private sequelize: Sequelize,
+    private moduleInfoService: ModuleInfoService,
   ) {}
 
   async onModuleInit() {
-    const t = await this.sequelize.transaction();
-    try {
-      await this.createRolesAndPermissionsOnInit(roles, permissions);
-      await t.commit();
-    } catch (error) {
-      await t.rollback();
+    const isModuleInit = await this.moduleInfoService.findOne({
+      where: {
+        name: 'role',
+      },
+    });
+
+    if (!isModuleInit?.isInit) {
+      const t = await this.sequelize.transaction();
+      try {
+        await this.createRolesAndPermissionsOnInit(roles, permissions);
+        await this.moduleInfoService.create({
+          name: 'role',
+          isInit: true,
+        });
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
+      }
     }
   }
 

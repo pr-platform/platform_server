@@ -32,13 +32,9 @@ import { PermissionsGuard } from '../role/guards/permission.guard';
 import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from '../user/guard/blocked.guard';
 
-class LangFindOneWhere {
-  lang: string;
-}
-
 @ApiTags('Lang')
 @ApiBearerAuth()
-@Controller('lang')
+@Controller('langs')
 export class LangController {
   constructor(private readonly langService: LangService) {}
 

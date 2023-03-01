@@ -3,21 +3,38 @@ import { RoleService } from '../role/role.service';
 import { roles } from './data/roles';
 import { permissions } from './data/permissions';
 import { Sequelize } from 'sequelize-typescript';
+import { ModuleInfoService } from '../moduleInfo/moduleInfo.service';
 
 @Injectable()
 export class FilesystemService {
-  constructor(private roleService: RoleService, private sequelize: Sequelize) {}
+  constructor(
+    private roleService: RoleService,
+    private sequelize: Sequelize,
+    private moduleInfoService: ModuleInfoService,
+  ) {}
 
   async onModuleInit() {
-    const t = await this.sequelize.transaction();
-    try {
-      await this.roleService.createRolesAndPermissionsOnInit(
-        roles,
-        permissions,
-      );
-      await t.commit();
-    } catch (error) {
-      await t.rollback();
+    const isModuleInit = await this.moduleInfoService.findOne({
+      where: {
+        name: 'filesystem',
+      },
+    });
+
+    if (!isModuleInit?.isInit) {
+      const t = await this.sequelize.transaction();
+      try {
+        await this.roleService.createRolesAndPermissionsOnInit(
+          roles,
+          permissions,
+        );
+        await this.moduleInfoService.create({
+          name: 'filesystem',
+          isInit: true,
+        });
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
+      }
     }
   }
 }

@@ -1,3 +1,4 @@
+import { ModuleInfoModule } from './../moduleInfo/moduleInfo.module';
 import { Module } from '@nestjs/common';
 import { FilesystemController } from './filesystem.controller';
 import { FilesystemService } from './filesystem.service';
@@ -10,6 +11,7 @@ import { RoleModule } from '../role/role.module';
       dest: './upload',
     }),
     RoleModule,
+    ModuleInfoModule,
   ],
   controllers: [FilesystemController],
   providers: [FilesystemService],

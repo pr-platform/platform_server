@@ -14,6 +14,7 @@ import { RoleService } from '../role/role.service';
 import { roles } from './data/roles';
 import { permissions } from './data/permissions';
 import { Sequelize } from 'sequelize-typescript';
+import { ModuleInfoService } from '../moduleInfo/moduleInfo.service';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
     private jwtService: JwtService,
     private roleService: RoleService,
     private sequelize: Sequelize,
+    private moduleInfoService: ModuleInfoService,
   ) {}
   async hashPassword(password) {
     return await bcrypt.hash(
@@ -33,22 +35,35 @@ export class UserService {
   }
 
   async onModuleInit() {
-    const t = await this.sequelize.transaction();
-    try {
-      await this.roleService.createRolesAndPermissionsOnInit(
-        roles,
-        permissions,
-      );
+    const isModuleInit = await this.moduleInfoService.findOne({
+      where: {
+        name: 'user',
+      },
+    });
 
-      const admin = await this.findOrCreateAdmin();
+    if (!isModuleInit?.isInit) {
+      const t = await this.sequelize.transaction();
+      try {
+        await this.roleService.createRolesAndPermissionsOnInit(
+          roles,
+          permissions,
+        );
 
-      if (!admin.roleId) {
-        const adminRole = await this.roleService.findByAlias('admin');
-        await adminRole.$add('users', admin);
+        const admin = await this.findOrCreateAdmin();
+
+        if (!admin.roleId) {
+          const adminRole = await this.roleService.findByAlias('admin');
+          await adminRole.$add('users', admin);
+        }
+
+        await this.moduleInfoService.create({
+          name: 'user',
+          isInit: true,
+        });
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
       }
-      await t.commit();
-    } catch (error) {
-      await t.rollback();
     }
   }
 

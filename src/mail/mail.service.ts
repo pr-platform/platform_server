@@ -12,6 +12,7 @@ import { RoleService } from '../role/role.service';
 import { roles } from './data/roles';
 import { permissions } from './data/permissions';
 import { Sequelize } from 'sequelize-typescript';
+import { ModuleInfoService } from '../moduleInfo/moduleInfo.service';
 
 @Injectable()
 export class MailService {
@@ -22,18 +23,31 @@ export class MailService {
     private readonly logger: LoggerService,
     private roleService: RoleService,
     private sequelize: Sequelize,
+    private moduleInfoService: ModuleInfoService,
   ) {}
 
   async onModuleInit() {
-    const t = await this.sequelize.transaction();
-    try {
-      await this.roleService.createRolesAndPermissionsOnInit(
-        roles,
-        permissions,
-      );
-      await t.commit();
-    } catch (error) {
-      await t.rollback();
+    const isModuleInit = await this.moduleInfoService.findOne({
+      where: {
+        name: 'mail',
+      },
+    });
+
+    if (!isModuleInit?.isInit) {
+      const t = await this.sequelize.transaction();
+      try {
+        await this.roleService.createRolesAndPermissionsOnInit(
+          roles,
+          permissions,
+        );
+        await this.moduleInfoService.create({
+          name: 'mail',
+          isInit: true,
+        });
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
+      }
     }
   }
 

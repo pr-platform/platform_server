@@ -1,3 +1,4 @@
+import { ModuleInfoModule } from '../moduleInfo/moduleInfo.module';
 import { Module } from '@nestjs/common';
 import { LangService } from './lang.service';
 import { LangController } from './lang.controller';
@@ -13,6 +14,7 @@ import { TranslationResolver } from './translation.resolver';
   imports: [
     SequelizeModule.forFeature([Lang, Lexeme, Translation]),
     RoleModule,
+    ModuleInfoModule,
   ],
   providers: [LangService, LangResolver, TranslationResolver],
   controllers: [LangController],

@@ -1,3 +1,4 @@
+import { ModuleInfoService } from '../moduleInfo/moduleInfo.service';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateLangDto } from './dto/create-lang-dto';
@@ -23,24 +24,32 @@ export class LangService {
     private translationModel: typeof Translation,
     private sequelize: Sequelize,
     private roleService: RoleService,
+    private moduleInfoService: ModuleInfoService,
   ) {}
 
   async onModuleInit() {
-    const t = await this.sequelize.transaction();
-    try {
-      await this.roleService.createRolesAndPermissionsOnInit(
-        roles,
-        permissions,
-      );
-      await t.commit();
-    } catch (error) {
-      await t.rollback();
-    }
+    const isModuleInit = await this.moduleInfoService.findOne({
+      where: {
+        name: 'lang',
+      },
+    });
 
-    try {
-      this.createLangsAndTranslationsOnInit();
-    } catch (error) {
-      console.log(error);
+    if (!isModuleInit?.isInit) {
+      const t = await this.sequelize.transaction();
+      try {
+        await this.roleService.createRolesAndPermissionsOnInit(
+          roles,
+          permissions,
+        );
+        this.createLangsAndTranslationsOnInit();
+        await this.moduleInfoService.create({
+          name: 'lang',
+          isInit: true,
+        });
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
+      }
     }
   }
 

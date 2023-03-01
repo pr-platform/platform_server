@@ -7,6 +7,7 @@ import { RoleService } from '../role/role.service';
 import { ConfigService } from '@nestjs/config';
 import SendSmsBodyDto from './dto/send-sms-body.dto';
 import { Response } from 'express';
+import { ModuleInfoService } from '../moduleInfo/moduleInfo.service';
 
 const smsc = new SmscApi();
 
@@ -16,19 +17,32 @@ export class SmscService {
     private sequelize: Sequelize,
     private roleService: RoleService,
     private configService: ConfigService,
+    private moduleInfoService: ModuleInfoService,
   ) {}
 
   async onModuleInit() {
-    const t = await this.sequelize.transaction();
+    const isModuleInit = await this.moduleInfoService.findOne({
+      where: {
+        name: 'smsc',
+      },
+    });
 
-    try {
-      await this.roleService.createRolesAndPermissionsOnInit(
-        roles,
-        permissions,
-      );
-      await t.commit();
-    } catch (error) {
-      await t.rollback();
+    if (!isModuleInit?.isInit) {
+      const t = await this.sequelize.transaction();
+
+      try {
+        await this.roleService.createRolesAndPermissionsOnInit(
+          roles,
+          permissions,
+        );
+        await this.moduleInfoService.create({
+          name: 'smsc',
+          isInit: true,
+        });
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
+      }
     }
 
     this.configure({

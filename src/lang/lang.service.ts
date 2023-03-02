@@ -60,6 +60,7 @@ export class LangService {
       if (!existLang) {
         existLang = await this.createLang({
           alias: lang.alias,
+          lexeme: lang.lexeme,
         });
       }
 

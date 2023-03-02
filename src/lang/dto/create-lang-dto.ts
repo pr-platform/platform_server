@@ -10,4 +10,11 @@ export class CreateLangDto {
   @IsString()
   @IsAlphanumeric()
   readonly alias: string;
+
+  @ApiProperty({
+    description: 'Lang name lexeme',
+    default: '',
+  })
+  @IsString()
+  readonly lexeme?: string;
 }

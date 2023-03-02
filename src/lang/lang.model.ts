@@ -36,6 +36,15 @@ export class Lang extends Model {
   })
   alias: string;
 
+  @Field({ nullable: true, description: 'Lang name lexeme' })
+  @ApiProperty({
+    type: String,
+    description: 'Lang name lexeme',
+    default: null,
+  })
+  @Column({ allowNull: true })
+  lexeme: string;
+
   @Field(type => [Translation])
   @HasMany(() => Translation)
   translations: Translation[];

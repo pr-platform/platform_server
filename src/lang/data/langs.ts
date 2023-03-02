@@ -1,7 +1,10 @@
 export default [
   {
     alias: 'en',
+    lexeme: 'English',
     dictionary: {
+      English: 'English',
+      Russian: 'Russian',
       Test: 'Test',
       Platform_name: 'Platform',
       Profile: 'Profile',
@@ -25,11 +28,17 @@ export default [
       Firstname: 'Firstname',
       Lastname: 'Lastname',
       Save: 'Save',
+      Alias: 'Alias',
+      Lexeme: 'Lexeme',
+      Create: 'Create',
     },
   },
   {
     alias: 'ru',
+    lexeme: 'Russian',
     dictionary: {
+      English: 'Английский',
+      Russian: 'Русский',
       Test: 'Тест',
       Platform_name: 'Platform',
       Profile: 'Профиль',
@@ -53,6 +62,9 @@ export default [
       Firstname: 'Имя',
       Lastname: 'Фамилия',
       Save: 'Сохранить',
+      Alias: 'Псевдоним',
+      Lexeme: 'Лексема',
+      Create: 'Создать',
     },
   },
 ];

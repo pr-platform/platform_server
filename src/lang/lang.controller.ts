@@ -41,9 +41,10 @@ export class LangController {
   @ApiBody({
     type: CreateLangDto,
     examples: {
-      CREATE_TEST_ROLE: {
+      CREATE_TEST_LANG: {
         value: {
-          alias: 'en',
+          alias: 'te',
+          lexeme: 'Test',
         },
       },
     },

@@ -26,6 +26,9 @@ type Lang {
 
   """Lang alias"""
   alias: String
+
+  """Lang name lexeme"""
+  lexeme: String
   translations: [Translation!]!
 }
 

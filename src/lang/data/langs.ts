@@ -31,6 +31,9 @@ export default [
       Alias: 'Alias',
       Lexeme: 'Lexeme',
       Create: 'Create',
+      Create_lang: 'Create lang',
+      Lang: 'Lang',
+      Create_lexeme: 'Create lexeme',
     },
   },
   {
@@ -65,6 +68,9 @@ export default [
       Alias: 'Псевдоним',
       Lexeme: 'Лексема',
       Create: 'Создать',
+      Create_lang: 'Создать язык',
+      Lang: 'Язык',
+      Create_lexeme: 'Создать лексему',
     },
   },
 ];

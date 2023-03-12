@@ -91,6 +91,8 @@ export class LangController {
       CREATE_TEST_TRANSLATION: {
         value: {
           translation: 'Test',
+          langId: 1,
+          lexemeId: 1,
         },
       },
     },
@@ -119,6 +121,7 @@ export class LangController {
   })
   @Get('/')
   async findAllLangs(@Query('include_dictionary') includeDictionary: string) {
+    console.log(includeDictionary);
     return await this.langService.findAllLangs(includeDictionary === 'true');
   }
 
@@ -161,11 +164,36 @@ export class LangController {
     type: [Lang],
     description: 'Return lang',
   })
-  @Get('/:id')
+  @Get('/lang/:id')
   async findById(
     @Param('id') id: number,
     @Query('include_dictionary') includeDictionary: string,
   ) {
     return await this.langService.findById(id, includeDictionary === 'true');
+  }
+
+  @ApiQuery({
+    type: Boolean,
+    name: 'include_translations',
+    required: false,
+  })
+  @ApiQuery({
+    type: Number,
+    name: 'translations_lang_id',
+    required: false,
+  })
+  @ApiResponse({
+    type: [Lexeme],
+    description: 'Return all lexemes',
+  })
+  @Get('/lexemes')
+  async findAllLexemes(
+    @Query('include_translations') includeTranslations: string,
+    @Query('translations_lang_id') translationsLangId: Pick<Lang, 'id'>,
+  ) {
+    return await this.langService.findAllLexemes(
+      includeTranslations === 'true',
+      translationsLangId,
+    );
   }
 }

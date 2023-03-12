@@ -92,7 +92,11 @@ export class LangService {
   }
 
   async createLang(createLangDto: CreateLangDto) {
-    return await this.langModel.create(createLangDto as any);
+    try {
+      return await this.langModel.create(createLangDto as any);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async createLexeme(createLexemeDto: CreateLexemeDto) {
@@ -153,10 +157,41 @@ export class LangService {
 
   async findLexemeByLexeme(lexeme: string) {
     return await this.lexemeModel.findOne({
-      where: {
-        lexeme,
-      },
+      where: { lexeme },
     });
+  }
+
+  async findAllLexemes(
+    includeTranslations?: boolean,
+    translationsLangId?: Pick<Lang, 'id'>,
+  ) {
+    try {
+      if (translationsLangId && !includeTranslations) {
+        throw new BadRequestException(
+          'Include_translatrion_required_true_if_provide_lang_id',
+        );
+      }
+
+      const query: any = {};
+
+      if (includeTranslations) {
+        query.include = [
+          {
+            association: 'translations',
+            ...(translationsLangId && {
+              where: {
+                langId: translationsLangId,
+              },
+            }),
+            required: false,
+          },
+        ];
+      }
+
+      return await this.lexemeModel.findAll(query);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findById(id: number, includeDictionary?: boolean) {

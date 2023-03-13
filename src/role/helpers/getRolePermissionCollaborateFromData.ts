@@ -18,6 +18,7 @@ export const getRolePermissionCollaborateFromData = (
         existPermissionRole.permissions.push({
           alias: permission.alias,
           title: permission.title,
+          lexeme: permission.lexeme,
         });
       } else {
         rolePermissions.push({
@@ -26,6 +27,7 @@ export const getRolePermissionCollaborateFromData = (
             {
               alias: permission.alias,
               title: permission.title,
+              lexeme: permission.lexeme,
             },
           ],
         });

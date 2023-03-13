@@ -9,14 +9,17 @@ export enum RolesNames {
 export const roles: CreateRoleDto[] = [
   {
     alias: RolesNames.DEFAULT,
+    lexeme: 'Default',
     title: 'Default',
   },
   {
     alias: RolesNames.ADMIN,
+    lexeme: 'Admin',
     title: 'Admin',
   },
   {
     alias: RolesNames.BLOCKED,
+    lexeme: 'Blocked',
     title: 'Blocked',
   },
 ];

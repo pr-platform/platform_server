@@ -17,4 +17,11 @@ export class CreateRoleDto {
   })
   @IsString()
   readonly title: string;
+
+  @ApiProperty({
+    description: 'Lexeme',
+    default: '',
+  })
+  @IsString()
+  readonly lexeme: string;
 }

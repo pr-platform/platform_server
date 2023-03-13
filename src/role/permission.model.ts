@@ -33,6 +33,14 @@ export class Permission extends Model {
   @Column
   title: string;
 
+  @ApiProperty({
+    type: String,
+    description: 'Lexeme',
+    default: '',
+  })
+  @Column
+  lexeme: string;
+
   @BelongsToMany(() => Role, () => RolePermission)
   roles: Role[];
 }

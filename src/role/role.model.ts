@@ -41,6 +41,14 @@ export class Role extends Model {
   @Column
   title: string;
 
+  @ApiProperty({
+    type: String,
+    description: 'Lexeme',
+    default: '',
+  })
+  @Column
+  lexeme: string;
+
   @HasMany(() => User)
   users: User[];
 

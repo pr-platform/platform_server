@@ -79,6 +79,7 @@ export class LangService {
         let existTranslation = await this.findOneTranslation({
           translation,
           langId: existLang.id,
+          lexemeId: existLexeme.id,
         });
 
         if (!existTranslation) {

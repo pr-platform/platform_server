@@ -35,6 +35,8 @@ export default [
       Lang: 'Lang',
       Create_lexeme: 'Create lexeme',
       Roles: 'Roles',
+      Create_role: 'Create role',
+      Name: 'Name',
     },
   },
   {
@@ -73,6 +75,8 @@ export default [
       Lang: 'Язык',
       Create_lexeme: 'Создать лексему',
       Roles: 'Роли',
+      Create_role: 'Создать роль',
+      Name: 'Имя',
     },
   },
 ];

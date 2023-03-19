@@ -58,7 +58,8 @@ export class RoleController {
       CREATE_TEST_ROLE: {
         value: {
           alias: 'test',
-          title: 'Test role',
+          name: 'Test role',
+          lexeme: 'Test_role',
         },
       },
     },

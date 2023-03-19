@@ -12,6 +12,7 @@ import { roles } from './data/roles';
 import { permissions } from './data/permissions';
 import langs from './data/langs';
 import { RoleService } from '../role/role.service';
+import { UpdateTranslationDto } from './dto/update-translation-dto';
 
 @Injectable()
 export class LangService {
@@ -114,6 +115,19 @@ export class LangService {
     }
 
     throw new BadRequestException();
+  }
+
+  async updateTranslation(
+    id: number,
+    updateTranslationDto: UpdateTranslationDto,
+  ) {
+    try {
+      const translation = await this.translationModel.findByPk(id);
+
+      return await translation.update(updateTranslationDto);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async findAllLangs(includeDictionary: boolean) {

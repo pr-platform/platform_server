@@ -8,6 +8,7 @@ import {
   Get,
   Query,
   Param,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -16,6 +17,7 @@ import {
   ApiParam,
   ApiQuery,
   ApiResponse,
+  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { LangService } from './lang.service';
@@ -31,6 +33,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionsGuard } from '../role/guards/permission.guard';
 import { VerifiedGuard } from '../user/guard/verified.guard';
 import { BlockedGuard } from '../user/guard/blocked.guard';
+import { UpdateTranslationDto } from './dto/update-translation-dto';
 
 @ApiTags('Lang')
 @ApiBearerAuth()
@@ -108,6 +111,36 @@ export class LangController {
   @Post('/translation')
   async createTransalation(@Body() createTranslationDto: CreateTranslationDto) {
     return this.langService.createTranslation(createTranslationDto);
+  }
+
+  @ApiBody({
+    type: UpdateTranslationDto,
+    examples: {
+      UPDATE_TEST_TRANSLATION: {
+        value: {
+          translation: 'Test 1',
+        },
+      },
+    },
+    description: 'Set required field for update translation',
+  })
+  @ApiParam({
+    type: Number,
+    name: 'id',
+  })
+  @ApiOkResponse({
+    type: Translation,
+    description: 'Return updated translation',
+  })
+  @Permissions(PermissionsNames.UPDATE_TRANSLATION)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
+  @HttpCode(HttpStatus.OK)
+  @Put('/translation/:id')
+  async updateTransalation(
+    @Param('id') id: number,
+    @Body() updateTranslationDto: UpdateTranslationDto,
+  ) {
+    return this.langService.updateTranslation(id, updateTranslationDto);
   }
 
   @ApiQuery({

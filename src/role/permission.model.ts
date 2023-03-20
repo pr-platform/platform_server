@@ -31,7 +31,7 @@ export class Permission extends Model {
     default: '',
   })
   @Column
-  title: string;
+  name: string;
 
   @ApiProperty({
     type: String,

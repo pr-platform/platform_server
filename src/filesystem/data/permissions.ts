@@ -9,7 +9,7 @@ export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
   [
     {
       alias: PermissionsNames.UPLOAD_FILE,
-      title: 'Upload file',
+      name: 'Upload file',
       lexeme: 'Upload_file',
       roles: [RolesNames.ADMIN, RolesNames.DEFAULT],
     },

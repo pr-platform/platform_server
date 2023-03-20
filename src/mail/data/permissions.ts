@@ -9,7 +9,7 @@ export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
   [
     {
       alias: PermissionsNames.SEND_EMAIL,
-      title: 'Send email',
+      name: 'Send email',
       lexeme: 'Send_email',
       roles: [RolesNames.ADMIN],
     },

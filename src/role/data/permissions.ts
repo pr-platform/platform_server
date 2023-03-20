@@ -13,31 +13,31 @@ export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
   [
     {
       alias: PermissionsNames.CREATE_ROLES,
-      title: 'Create roles',
+      name: 'Create roles',
       lexeme: 'Create_role',
       roles: [RolesNames.ADMIN],
     },
     {
       alias: PermissionsNames.UPDATE_ROLES,
-      title: 'Update roles',
+      name: 'Update roles',
       lexeme: 'Update_role',
       roles: [RolesNames.ADMIN],
     },
     {
       alias: PermissionsNames.READ_ROLES,
-      title: 'Read roles',
+      name: 'Read roles',
       lexeme: 'Read_role',
       roles: [RolesNames.ADMIN, RolesNames.DEFAULT],
     },
     {
       alias: PermissionsNames.DELETE_ROLES,
-      title: 'Remove roles',
+      name: 'Remove roles',
       lexeme: 'Remove_role',
       roles: [RolesNames.ADMIN],
     },
     {
       alias: PermissionsNames.CHANGE_PERMISSIONS,
-      title: 'Change permissions',
+      name: 'Change permissions',
       lexeme: 'Change_permissions',
       roles: [RolesNames.ADMIN],
     },

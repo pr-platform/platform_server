@@ -5,7 +5,7 @@ export class CreatePermissionDto {
   readonly alias: string;
 
   @IsString()
-  readonly title: string;
+  readonly name: string;
 
   @IsString()
   readonly lexeme: string;

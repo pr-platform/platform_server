@@ -23,6 +23,7 @@ import {
   ApiParam,
   ApiProperty,
   ApiQuery,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionsNames } from './data/permissions';
@@ -124,8 +125,11 @@ export class RoleController {
   @Permissions(PermissionsNames.READ_ROLES)
   @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/:id')
-  private async findById(@Param('id') id: number) {
-    return await this.roleService.findById(id);
+  private async findById(
+    @Param('id') id: number,
+    @Query('include_permissions') includePermissions: string,
+  ) {
+    return await this.roleService.findById(id, includePermissions === 'true');
   }
 
   @ApiOkResponse({
@@ -135,8 +139,31 @@ export class RoleController {
   @Permissions(PermissionsNames.READ_ROLES)
   @UseGuards(JwtAuthGuard, PermissionsGuard, BlockedGuard)
   @Get('/')
-  private async findAll() {
-    return await this.roleService.findAll();
+  private async findAll(
+    @Query('include_permissions') includePermissions: string,
+  ) {
+    try {
+      return await this.roleService.findAll(includePermissions === 'true');
+    } catch (error) {
+      console.log(error.message);
+      throw new BadRequestException();
+    }
+  }
+
+  @ApiResponse({
+    type: [Permission],
+    description: 'Return permissions array',
+  })
+  @Permissions(PermissionsNames.READ_ROLES)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
+  @Get('/permissions/find-all')
+  private async getPermissions() {
+    try {
+      return await this.roleService.findAllPermissions();
+    } catch (error) {
+      this.logger.error(error.message);
+      throw new BadRequestException(error.message);
+    }
   }
 
   @ApiBody({
@@ -156,7 +183,7 @@ export class RoleController {
   })
   @Permissions(PermissionsNames.CHANGE_PERMISSIONS)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
-  @Put('/set-permissions')
+  @Put('/permissions/set-permissions')
   private async addPermission(
     @Body('roleId') roleId: number,
     @Body('permissionIds') permissionIds: number[],
@@ -186,7 +213,7 @@ export class RoleController {
   })
   @Permissions(PermissionsNames.CHANGE_PERMISSIONS)
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
-  @Put('/unset-permissions')
+  @Put('/permissions/unset-permissions')
   private async unsetPermission(
     @Body('roleId') roleId: number,
     @Body('permissionIds') permissionIds: number[],

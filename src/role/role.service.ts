@@ -95,12 +95,20 @@ export class RoleService implements OnModuleInit {
     });
   }
 
-  async findById(id: string | number) {
-    return await this.roleModel.findByPk(id);
+  async findById(id: string | number, includePermissions?: boolean) {
+    return await this.roleModel.findByPk(id, {
+      ...(includePermissions && { include: ['permissions'] }),
+    });
   }
 
-  async findAll() {
-    return await this.roleModel.findAll();
+  async findAll(includePermissions?: boolean) {
+    return await this.roleModel.findAll({
+      ...(includePermissions && { include: ['permissions'] }),
+    });
+  }
+
+  async findAllPermissions() {
+    return await this.permissionModel.findAll();
   }
 
   async findPermissionByAlias(alias: string) {

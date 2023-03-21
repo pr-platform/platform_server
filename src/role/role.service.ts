@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from './role.model';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -136,14 +136,24 @@ export class RoleService implements OnModuleInit {
   }
 
   async setPermissions(roleId: number, permissionIds: number[]) {
-    const role = await this.findById(roleId);
+    try {
+      const role = await this.findById(roleId);
 
-    return await role.$add('permissions', permissionIds);
+      return await role.$add('permissions', permissionIds);
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(error.message);
+    }
   }
 
   async unsetPermissions(roleId: number, permissionIds: number[]) {
-    const role = await this.findById(roleId);
+    try {
+      const role = await this.findById(roleId);
 
-    return await role.$remove('permissions', permissionIds);
+      return await role.$remove('permissions', permissionIds);
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(error.message);
+    }
   }
 }

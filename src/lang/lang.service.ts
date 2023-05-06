@@ -42,7 +42,7 @@ export class LangService {
           roles,
           permissions,
         );
-        this.createLangsAndTranslationsOnInit();
+        this.createLangsAndTranslationsOnInit(langs);
         await this.moduleInfoService.create({
           name: 'lang',
           isInit: true,
@@ -54,7 +54,7 @@ export class LangService {
     }
   }
 
-  async createLangsAndTranslationsOnInit() {
+  async createLangsAndTranslationsOnInit(langs) {
     for await (const lang of langs) {
       let existLang = await this.findByAlias(lang.alias);
 

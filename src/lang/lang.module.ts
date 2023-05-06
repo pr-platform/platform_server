@@ -18,5 +18,6 @@ import { TranslationResolver } from './translation.resolver';
   ],
   providers: [LangService, LangResolver, TranslationResolver],
   controllers: [LangController],
+  exports: [LangService],
 })
 export class LangModule {}

@@ -16,6 +16,7 @@ import { MailService } from '../mail/mail.service';
 import { ConfigService } from '@nestjs/config';
 import { ResetPasswordBodyDto } from './dto/reset-password-body.dto';
 import { LoggerService } from '@nestjs/common';
+import { Sequelize } from 'sequelize-typescript';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
@@ -26,10 +27,10 @@ export class AuthService {
     private readonly roleService: RoleService,
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
+    private sequelize: Sequelize,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
   ) {}
-
   async login(loginData: LoginDataDto) {
     const user = await this.userService.findByEmailAndPassword(loginData);
 

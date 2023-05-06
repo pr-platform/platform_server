@@ -8,6 +8,7 @@ import {
   LoggerService,
   Headers,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -89,8 +90,14 @@ export class UserController {
   })
   @UseGuards(JwtAuthGuard, BlockedGuard)
   @Get('/profile')
-  async findByAccessToken(@Headers('Authorization') bearerAccessToken: string) {
+  async findByAccessToken(
+    @Headers('Authorization') bearerAccessToken: string,
+    @Query('include_permissions') includePermissions: string,
+  ) {
     const accessToken = bearerAccessToken.split(' ')[1];
-    return await this.userService.findByAccessToken(accessToken);
+    return await this.userService.findByAccessToken(
+      accessToken,
+      includePermissions === 'true',
+    );
   }
 }

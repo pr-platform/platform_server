@@ -37,6 +37,7 @@ export default [
       Roles: 'Roles',
       Create_role: 'Create role',
       Name: 'Name',
+      Role: 'Role',
     },
   },
   {
@@ -77,6 +78,7 @@ export default [
       Roles: 'Роли',
       Create_role: 'Создать роль',
       Name: 'Имя',
+      Role: 'Роль',
     },
   },
 ];

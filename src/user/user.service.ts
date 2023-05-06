@@ -106,11 +106,19 @@ export class UserService {
     return this.userModel.findAll();
   }
 
-  async findById(id: string) {
+  async findById(id: string, includePermissions?: boolean) {
     return this.userModel.findOne({
       where: {
         id,
       },
+      ...(includePermissions && {
+        include: [
+          {
+            association: 'role',
+            include: ['permissions'],
+          },
+        ],
+      }),
     });
   }
 
@@ -136,14 +144,14 @@ export class UserService {
     return user;
   }
 
-  async findByAccessToken(accessToken: string) {
+  async findByAccessToken(accessToken: string, includePermissions?: boolean) {
     const decoded = this.jwtService.decode(accessToken) as any;
 
     if (decoded.type !== 'login') {
       throw new UnauthorizedException();
     }
 
-    return this.findById(decoded.userId);
+    return this.findById(decoded.userId, includePermissions);
   }
 
   async remove(id: string) {

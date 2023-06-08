@@ -15,16 +15,11 @@ export class EventsGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('events')
-  findAll(@MessageBody() data: any) {
-    console.log(data)
+  @SubscribeMessage('test-event')
+  testEvent(@MessageBody() data: any) {
+    console.log(data);
     return {
-      name: 'Rinat',
+      message: 'Test',
     };
-  }
-
-  @SubscribeMessage('identity')
-  async identity(@MessageBody() data: number): Promise<number> {
-    return data;
   }
 }

@@ -22,6 +22,7 @@ import { join } from 'path';
 import { AppResolver } from './app.resolver';
 import { ModuleInfoModule } from './moduleInfo/moduleInfo.module';
 import { EventsModule } from './events/events.module';
+import { VideoChatModule } from './videoChat/videoChat.module';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -83,7 +84,8 @@ const myFormat = winston.format.printf(
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    EventsModule,
+    EventsModule, // Test
+    VideoChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

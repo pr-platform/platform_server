@@ -21,6 +21,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { AppResolver } from './app.resolver';
 import { ModuleInfoModule } from './moduleInfo/moduleInfo.module';
+import { EventsModule } from './events/events.module';
 
 const myFormat = winston.format.printf(
   ({ level, message, timestamp }) => `${timestamp} ${level}: ${message}`,
@@ -82,6 +83,7 @@ const myFormat = winston.format.printf(
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

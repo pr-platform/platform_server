@@ -5,7 +5,7 @@ export const ACTIONS = {
   REMOVE_PEER: 'remove-peer',
   ADD_PEER: 'add-peer',
   RELAY_SDP: 'relay-sdp',
-  PLAY_ICE: 'relay-ice',
+  RELAY_ICE: 'relay-ice',
   ICE_CANDIDATE: 'ice-candidate',
   SESSION_DESCRIPTION: 'session-description',
 };

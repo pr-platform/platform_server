@@ -4,22 +4,31 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ACTIONS } from './variables';
+import { version, validate } from 'uuid';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-export class VideoChatGateway {
+export class VideoChatGateway implements OnGatewayDisconnect {
+  handleConnection() {
+    this.shareRoomsInfo();
+  }
+
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.leaveRoom(client);
+  }
+
   @WebSocketServer()
   server: Server;
 
   @SubscribeMessage('test-event')
   testEvent(@MessageBody() data: any) {
-    console.log(data);
     return {
       message: 'Test',
     };
@@ -28,16 +37,43 @@ export class VideoChatGateway {
   private getClientsRooms() {
     const { rooms } = this.server.sockets.adapter;
 
-    return Array.from(rooms.keys());
+    return Array.from(rooms.keys()).filter(
+      (roomId) => validate(roomId) && version(roomId) === 4,
+    );
   }
 
   private shareRoomsInfo() {
+    // console.log('shareRoomsInfo', this.getClientsRooms())
     this.server.emit(ACTIONS.SHARE_ROOMS, {
       rooms: this.getClientsRooms(),
     });
   }
 
-  @SubscribeMessage('test-on')
+  private leaveRoom(client) {
+    const { rooms } = client;
+
+    Array.from(rooms).forEach((roomId) => {
+      const clients = Array.from(
+        this.server.sockets.adapter.rooms.get(roomId as string) || [],
+      );
+
+      clients.forEach((clientId) => {
+        this.server.to(clientId).emit(ACTIONS.REMOVE_PEER, {
+          peerID: client.id,
+        });
+
+        client.emit(ACTIONS.REMOVE_PEER, {
+          peerID: clientId,
+        });
+      });
+
+      client.leave(roomId);
+    });
+
+    this.shareRoomsInfo();
+  }
+
+  @SubscribeMessage(ACTIONS.JOIN)
   join(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
     const roomId = data.roomId;
     const joinedRooms = client.rooms;
@@ -46,13 +82,11 @@ export class VideoChatGateway {
       return console.warn(`Already joined to room ${roomId}`);
     }
 
-    console.log('rooms', this.server.sockets.adapter.rooms);
-
     const clients = Array.from(
       this.server.sockets.adapter.rooms.get(roomId) || [],
     );
 
-    console.log('clients', clients);
+    // console.log('join', clients)
 
     clients.forEach((clientId) => {
       this.server.to(clientId as any).emit(ACTIONS.ADD_PEER, {
@@ -68,29 +102,10 @@ export class VideoChatGateway {
 
     client.join(roomId);
     this.shareRoomsInfo();
+  }
 
-    function leaveRoom() {
-      const { rooms } = client;
-
-      Array.from(rooms).forEach((roomId) => {
-        const clients = Array.from(this.server.adapter.rooms.get(roomId) || []);
-
-        clients.forEach((clientId) => {
-          this.server.to(clientId).emit(ACTIONS.REMOVE_PEER, {
-            peerID: client.id,
-          });
-
-          client.emit(ACTIONS.REMOVE_PEER, {
-            peerID: clientId,
-          });
-        });
-        client.leave(roomId);
-      });
-
-      this.shareRoomsInfo();
-    }
-
-    client.on(ACTIONS.LEAVE, leaveRoom);
-    client.on('disconnecting', leaveRoom);
+  @SubscribeMessage(ACTIONS.LEAVE)
+  leave(@ConnectedSocket() client: Socket) {
+    this.leaveRoom(client);
   }
 }

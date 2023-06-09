@@ -27,13 +27,6 @@ export class VideoChatGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('test-event')
-  testEvent(@MessageBody() data: any) {
-    return {
-      message: 'Test',
-    };
-  }
-
   private getClientsRooms() {
     const { rooms } = this.server.sockets.adapter;
 
@@ -43,7 +36,6 @@ export class VideoChatGateway implements OnGatewayDisconnect {
   }
 
   private shareRoomsInfo() {
-    // console.log('shareRoomsInfo', this.getClientsRooms())
     this.server.emit(ACTIONS.SHARE_ROOMS, {
       rooms: this.getClientsRooms(),
     });
@@ -85,8 +77,6 @@ export class VideoChatGateway implements OnGatewayDisconnect {
     const clients = Array.from(
       this.server.sockets.adapter.rooms.get(roomId) || [],
     );
-
-    // console.log('join', clients)
 
     clients.forEach((clientId) => {
       this.server.to(clientId as any).emit(ACTIONS.ADD_PEER, {

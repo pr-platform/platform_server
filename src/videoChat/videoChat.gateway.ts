@@ -16,19 +16,21 @@ import { version, validate } from 'uuid';
   },
 })
 export class VideoChatGateway implements OnGatewayDisconnect {
+  private roomId = '';
+
   handleConnection() {
     this.shareRoomsInfo();
   }
 
-  handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.leaveRoom(client);
+  handleDisconnect(socket: Socket) {
+    this.leaveRoom(socket);
   }
 
   @WebSocketServer()
-  server: Server;
+  io: Server;
 
   private getClientsRooms() {
-    const { rooms } = this.server.sockets.adapter;
+    const { rooms } = this.io.sockets.adapter;
 
     return Array.from(rooms.keys()).filter(
       (roomId) => validate(roomId) && version(roomId) === 4,
@@ -36,66 +38,72 @@ export class VideoChatGateway implements OnGatewayDisconnect {
   }
 
   private shareRoomsInfo() {
-    this.server.emit(ACTIONS.SHARE_ROOMS, {
+    this.io.emit(ACTIONS.SHARE_ROOMS, {
       rooms: this.getClientsRooms(),
     });
   }
 
-  private leaveRoom(client) {
-    const { rooms } = client;
+  private leaveRoom(socket) {
+    const { rooms } = socket;
 
-    Array.from(rooms).forEach((roomId) => {
-      const clients = Array.from(
-        this.server.sockets.adapter.rooms.get(roomId as string) || [],
-      );
+    Array.from(rooms)
+      .filter((roomId) => validate(roomId) && version(roomId) === 4)
+      .forEach((roomId) => socket.leave(roomId));
 
-      clients.forEach((clientId) => {
-        this.server.to(clientId).emit(ACTIONS.REMOVE_PEER, {
-          peerID: client.id,
-        });
-
-        client.emit(ACTIONS.REMOVE_PEER, {
-          peerID: clientId,
-        });
-      });
-
-      client.leave(roomId);
+    socket.broadcast.in(this.roomId).emit(ACTIONS.REMOVE_PEER, {
+      peerId: socket.id,
     });
 
     this.shareRoomsInfo();
   }
 
   @SubscribeMessage(ACTIONS.JOIN)
-  join(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-    const roomId = data.roomId;
-    const joinedRooms = client.rooms;
+  join(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    this.roomId = data.roomId;
+    const joinedRooms = socket.rooms;
 
-    if (Array.from(joinedRooms).includes(roomId)) {
-      return console.warn(`Already joined to room ${roomId}`);
+    if (Array.from(joinedRooms).includes(this.roomId)) {
+      return console.warn(`Already joined to room ${this.roomId}`);
     }
 
     const clients = Array.from(
-      this.server.sockets.adapter.rooms.get(roomId) || [],
+      this.io.sockets.adapter.rooms.get(this.roomId) || [],
     );
 
     clients.forEach((clientId) => {
-      this.server.to(clientId as any).emit(ACTIONS.ADD_PEER, {
-        peerID: client.id,
+      this.io.to(clientId as any).emit(ACTIONS.ADD_PEER, {
+        peerId: socket.id,
         createOffer: false,
       });
 
-      client.emit(ACTIONS.ADD_PEER, {
-        peerID: clientId,
+      socket.emit(ACTIONS.ADD_PEER, {
+        peerId: clientId,
         createOffer: true,
       });
     });
 
-    client.join(roomId);
+    socket.join(this.roomId);
     this.shareRoomsInfo();
   }
 
   @SubscribeMessage(ACTIONS.LEAVE)
-  leave(@ConnectedSocket() client: Socket) {
-    this.leaveRoom(client);
+  leave(@ConnectedSocket() socket: Socket) {
+    this.leaveRoom(socket);
+  }
+
+  @SubscribeMessage(ACTIONS.RELAY_SDP)
+  relaySdp(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    this.io.to(data.peerId).emit(ACTIONS.SESSION_DESCRIPTION, {
+      peerId: socket.id,
+      sessionDescription: data.sessionDescription,
+    });
+  }
+
+  @SubscribeMessage(ACTIONS.RELAY_ICE)
+  relayIce(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    this.io.to(data.peerId).emit(ACTIONS.ICE_CANDIDATE, {
+      peerId: socket.id,
+      iceCandidate: data.iceCandidate,
+    });
   }
 }

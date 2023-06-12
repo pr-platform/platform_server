@@ -66,16 +66,15 @@ export class VideoChatGateway implements OnGatewayDisconnect {
       return console.warn(`Already joined to room ${this.roomId}`);
     }
 
+    socket.broadcast.in(this.roomId).emit(ACTIONS.ADD_PEER, {
+      peerId: socket.id,
+    });
+
     const clients = Array.from(
       this.io.sockets.adapter.rooms.get(this.roomId) || [],
     );
 
     clients.forEach((clientId) => {
-      this.io.to(clientId as any).emit(ACTIONS.ADD_PEER, {
-        peerId: socket.id,
-        createOffer: false,
-      });
-
       socket.emit(ACTIONS.ADD_PEER, {
         peerId: clientId,
         createOffer: true,

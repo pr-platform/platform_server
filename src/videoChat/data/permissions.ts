@@ -18,7 +18,7 @@ export const permissions: Array<CreatePermissionDto & { roles: RolesNames[] }> =
     {
       alias: PermissionsNames.GET_ROOM,
       name: 'Reed room',
-      lexeme: 'Create_room',
+      lexeme: 'Get_room',
       roles: [RolesNames.ADMIN],
     },
     {

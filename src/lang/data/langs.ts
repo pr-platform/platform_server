@@ -38,6 +38,9 @@ export default [
       Create_role: 'Create role',
       Name: 'Name',
       Role: 'Role',
+      Video_chat: 'Video chat',
+      Create_room: 'Create room',
+      Join_room: 'Join room',
     },
   },
   {
@@ -79,6 +82,9 @@ export default [
       Create_role: 'Создать роль',
       Name: 'Имя',
       Role: 'Роль',
+      Video_chat: 'Видео чат',
+      Create_room: 'Создать комнату',
+      Join_room: 'Присоединиться к комнате',
     },
   },
 ];

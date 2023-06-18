@@ -141,7 +141,6 @@ export class RoleService implements OnModuleInit {
 
       return await role.$add('permissions', permissionIds);
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(error.message);
     }
   }
@@ -152,7 +151,6 @@ export class RoleService implements OnModuleInit {
 
       return await role.$remove('permissions', permissionIds);
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(error.message);
     }
   }

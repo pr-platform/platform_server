@@ -1,0 +1,1 @@
+[Link info for create websocket guard](https://github.com/nestjs/nest/issues/3206)

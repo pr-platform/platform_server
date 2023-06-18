@@ -145,7 +145,6 @@ export class RoleController {
     try {
       return await this.roleService.findAll(includePermissions === 'true');
     } catch (error) {
-      console.log(error.message);
       throw new BadRequestException();
     }
   }

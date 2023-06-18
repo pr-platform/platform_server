@@ -24,6 +24,8 @@ export class PermissionsGuard implements CanActivate {
 
     if (contextType === ContextTypes.GRAPHQL) {
       user = GqlExecutionContext.create(context).getContext()?.req?.user;
+    } else if (contextType === ContextTypes.WS) {
+      user = context.switchToWs().getRequest()?.handshake?.user;
     } else {
       user = context.switchToHttp().getRequest()?.user;
     }

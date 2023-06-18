@@ -154,7 +154,6 @@ export class LangController {
   })
   @Get('/')
   async findAllLangs(@Query('include_dictionary') includeDictionary: string) {
-    console.log(includeDictionary);
     return await this.langService.findAllLangs(includeDictionary === 'true');
   }
 

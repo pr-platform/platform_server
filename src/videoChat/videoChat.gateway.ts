@@ -9,6 +9,13 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ACTIONS } from './variables';
 import { version, validate } from 'uuid';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PermissionsGuard } from '../role/guards/permission.guard';
+import { VerifiedGuard } from '../user/guard/verified.guard';
+import { BlockedGuard } from '../user/guard/blocked.guard';
+import { Permissions } from '../role/decorators/permission.decorator';
+import { PermissionsNames } from './data/permissions';
 
 @WebSocketGateway({
   cors: {
@@ -57,6 +64,21 @@ export class VideoChatGateway implements OnGatewayDisconnect {
     this.shareRoomsInfo();
   }
 
+  @Permissions(PermissionsNames.GET_ROOM)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
+  @SubscribeMessage(ACTIONS.SHARE_ROOMS)
+  getRooms() {
+    return {
+      rooms: this.getClientsRooms(),
+    };
+  }
+
+  @Permissions(
+    PermissionsNames.GET_ROOM,
+    PermissionsNames.CREATE_ROOM,
+    PermissionsNames.JOIN_ROOM,
+  )
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @SubscribeMessage(ACTIONS.JOIN)
   join(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
     this.roomId = data.roomId;
@@ -85,11 +107,15 @@ export class VideoChatGateway implements OnGatewayDisconnect {
     this.shareRoomsInfo();
   }
 
+  @Permissions(PermissionsNames.CREATE_ROOM, PermissionsNames.JOIN_ROOM)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @SubscribeMessage(ACTIONS.LEAVE)
   leave(@ConnectedSocket() socket: Socket) {
     this.leaveRoom(socket);
   }
 
+  @Permissions(PermissionsNames.CREATE_ROOM, PermissionsNames.JOIN_ROOM)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @SubscribeMessage(ACTIONS.RELAY_SDP)
   relaySdp(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
     this.io.to(data.peerId).emit(ACTIONS.SESSION_DESCRIPTION, {
@@ -98,6 +124,8 @@ export class VideoChatGateway implements OnGatewayDisconnect {
     });
   }
 
+  @Permissions(PermissionsNames.CREATE_ROOM, PermissionsNames.JOIN_ROOM)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @SubscribeMessage(ACTIONS.RELAY_ICE)
   relayIce(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
     this.io.to(data.peerId).emit(ACTIONS.ICE_CANDIDATE, {

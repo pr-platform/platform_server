@@ -17,7 +17,6 @@ export class EventsGateway {
 
   @SubscribeMessage('test-event')
   testEvent(@MessageBody() data: any) {
-    console.log(this.server);
     return {
       message: 'Test',
     };

@@ -5,7 +5,7 @@ export enum PermissionsNames {
   CREATE_USERS = 'user:create_user',
   UPDATE_USERS = 'user:update_user',
   READ_USERS = 'user:read_user',
-  DELETE_USERS = 'vdelete_user',
+  DELETE_USERS = 'user:delete_user',
   BLOCK_USERS = 'user:block_user',
 }
 

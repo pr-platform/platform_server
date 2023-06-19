@@ -25,6 +25,8 @@ import { PermissionsNames } from './data/permissions';
 export class VideoChatGateway implements OnGatewayDisconnect {
   private roomId = '';
 
+  private users = [];
+
   handleConnection() {
     this.shareRoomsInfo();
   }
@@ -52,6 +54,8 @@ export class VideoChatGateway implements OnGatewayDisconnect {
 
   private leaveRoom(socket) {
     const { rooms } = socket;
+
+    this.users = this.users.filter((user) => user.clientId !== socket.id);
 
     Array.from(rooms)
       .filter((roomId) => validate(roomId) && version(roomId) === 4)
@@ -81,7 +85,24 @@ export class VideoChatGateway implements OnGatewayDisconnect {
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @SubscribeMessage(ACTIONS.JOIN)
   join(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
-    this.roomId = data.roomId;
+    if (validate(data.roomId) && version(data.roomId) === 4) {
+      const user = (socket.handshake as any).user;
+
+      const existUser = this.users.find((user) => user.user.id === user.id);
+
+      if (!existUser) {
+        this.roomId = data.roomId;
+        this.users.push({
+          clientId: socket.id,
+          user: {
+            id: user.id,
+            lastname: user.lastname,
+            firstname: user.firstname,
+          },
+        });
+      }
+    }
+
     const joinedRooms = socket.rooms;
 
     if (Array.from(joinedRooms).includes(this.roomId)) {
@@ -90,6 +111,7 @@ export class VideoChatGateway implements OnGatewayDisconnect {
 
     socket.broadcast.in(this.roomId).emit(ACTIONS.ADD_PEER, {
       peerId: socket.id,
+      user: this.users.find((user) => user.clientId === socket.id)?.user,
     });
 
     const clients = Array.from(
@@ -100,6 +122,7 @@ export class VideoChatGateway implements OnGatewayDisconnect {
       socket.emit(ACTIONS.ADD_PEER, {
         peerId: clientId,
         createOffer: true,
+        user: this.users.find((user) => user.clientId === clientId)?.user,
       });
     });
 

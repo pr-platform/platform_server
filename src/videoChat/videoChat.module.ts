@@ -15,6 +15,5 @@ import { Translation } from 'src/lang/translation.model';
     SequelizeModule.forFeature([Lang, Lexeme, Translation]),
   ],
   providers: [VideoChatGateway, VideoChatService],
-  // exports: [VideoChatService],
 })
 export class VideoChatModule {}

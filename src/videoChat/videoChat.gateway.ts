@@ -85,6 +85,10 @@ export class VideoChatGateway implements OnGatewayDisconnect {
   @UseGuards(JwtAuthGuard, PermissionsGuard, VerifiedGuard, BlockedGuard)
   @SubscribeMessage(ACTIONS.JOIN)
   join(@ConnectedSocket() socket: Socket, @MessageBody() data: any) {
+    const clients = Array.from(
+      this.io.sockets.adapter.rooms.get(this.roomId) || [],
+    );
+
     if (validate(data.roomId) && version(data.roomId) === 4) {
       const user = (socket.handshake as any).user;
 
@@ -98,6 +102,7 @@ export class VideoChatGateway implements OnGatewayDisconnect {
             id: user.id,
             lastname: user.lastname,
             firstname: user.firstname,
+            isCreator: !clients.length,
           },
         });
       }
@@ -113,10 +118,6 @@ export class VideoChatGateway implements OnGatewayDisconnect {
       peerId: socket.id,
       user: this.users.find((user) => user.clientId === socket.id)?.user,
     });
-
-    const clients = Array.from(
-      this.io.sockets.adapter.rooms.get(this.roomId) || [],
-    );
 
     clients.forEach((clientId) => {
       socket.emit(ACTIONS.ADD_PEER, {
